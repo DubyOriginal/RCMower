@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">RCMower</string>
+
+
+    <!-- BUTTONS -->
+    <!-- ************************************************************************************************* -->
+    <string name="btn_SEND">Pošalji</string>
+    <string name="btn_OK">U REDU</string>
+    <string name="btn_YES">DA</string>
+    <string name="btn_NO">NE</string>
+    <string name="btn_CANCEL">OTKAŽI</string>
+    <string name="btn_CLOSE">ZATVORI</string>history
+    <string name="btn_PREPARE">PRIPREMI</string>
+    <string name="btn_DENY">ODBIJ</string>
+    <string name="btn_ALLOW">DOZVOLI</string>
+    <string name="btn_APPLY">PRIMENI</string>
+    <string name="btn_ACCEPT">PRIHVATI</string>
+
+
+    <!-- COMMON -->
+    <!-- *************************************************************************************** -->
+    <string name="dialog_title_warning">Upozorenje!</string>
+    <string name="dialog_title_error">Pogreška!</string>
+    <string name="dialog_title_info">Info!</string>
+
+</resources>

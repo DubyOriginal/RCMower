@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".activities.SmartDriveActivity"
+    android:padding="16dp"
+    android:background="#eee">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btnLeft_sda"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:drawableLeft="@drawable/ic_cmd_left"
+            android:drawablePadding="150dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnHome_sda"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:drawableTop="@drawable/ic_home"
+                android:drawablePadding="0dp"/>
+
+            <Button
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnForward_sda"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:drawableTop="@drawable/ic_start_moweing"
+                android:drawablePadding="-20dp"/>
+
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/btnStop_sda"
+                android:drawableTop="@drawable/ic_recording"
+                android:drawablePadding="-20dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/button5"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:drawableTop="@drawable/ic_turn_left"
+                android:drawablePadding="20dp"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp">
+
+                <hr.duby.rcmower.gui.VerticalSeekBar
+                    android:id="@+id/vsb_speed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:max="100"
+                    android:progress="40"
+                    android:indeterminate="false" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button6"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:drawableTop="@drawable/ic_turn_right"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnBack_sda"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_stop"
+                android:drawablePadding="-20dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/btnRight_sda"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:drawableLeft="@drawable/ic_cmd_right"
+            android:drawablePadding="50dp"/>
+    </LinearLayout>
+</LinearLayout>

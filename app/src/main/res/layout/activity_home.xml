@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.HomeActivity"
+    android:padding="16dp"
+    android:gravity="center"
+    android:background="#333">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="#444">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="DRIVE CONTROL MODE"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                android:textColor="#FFF" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:paddingTop="5dp">
+
+                <Button
+                    android:id="@+id/btnCtrlManual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="MANUAL DRIVE"
+                    android:layout_gravity="center_horizontal"
+                    android:drawableLeft="@drawable/ic_all_direction"
+                    android:layout_marginBottom="15dp" />
+
+                <Button
+                    android:id="@+id/btnCtrlSemiAutomatic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SMART DRIVE"
+                    android:layout_gravity="center_horizontal"
+                    android:drawableLeft="@drawable/ic_mow_pat"
+                    android:layout_marginBottom="15dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="#444"
+        android:layout_margin="20dp"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:paddingTop="5dp" >
+
+            <Button
+                android:id="@+id/btnProgram"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PROGRAM"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/ic_program"
+                android:layout_marginBottom="15dp" />
+
+            <Button
+                android:id="@+id/btnInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="INFO"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/ic_mower_info"
+                android:drawablePadding="-40dp"
+                android:layout_marginBottom="15dp" />
+
+            <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SETTINGS"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/ic_settings" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
