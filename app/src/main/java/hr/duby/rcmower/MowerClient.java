@@ -66,7 +66,7 @@ public class MowerClient {
             @Override
             public void onGetDone(JSONObject result) {
                 String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
-                DLog("RESPONSE (in: " + stopTime + ") -> request_HCSR04: " + result.toString());
+                DLog("RESPONSE for request_HCSR04 (in: " + stopTime);
                 if (listener != null) {
                     listener.onResponse_HCSR04Done(result);
                 }
@@ -128,7 +128,8 @@ public class MowerClient {
     public String getBASE_URL(Context context){
         IPADDRESS = BasicUtils.getVALUEFromSharedPrefs(context, Const.PREF_IP, "192.168.1.24");
         PORT = BasicUtils.getVALUEFromSharedPrefs(context, Const.PREF_PORT, "80");
-        BASE_URL = "http://"  + IPADDRESS + ":" + PORT;
+        //BASE_URL = "http://"  + IPADDRESS + ":" + PORT;
+        BASE_URL = "http://"  + IPADDRESS;
         return BASE_URL;
     }
 

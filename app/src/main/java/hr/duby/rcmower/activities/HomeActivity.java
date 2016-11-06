@@ -67,7 +67,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (intent != null){
             startActivity(intent);
-            finish();
         }
     }
 

@@ -116,6 +116,7 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         Intent intent = new Intent(this, HomeActivity.class);
         if (intent != null){
             startActivity(intent);
+            finish();
         }
     }
 

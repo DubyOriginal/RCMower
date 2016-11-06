@@ -34,8 +34,6 @@ import javax.net.ssl.X509TrustManager;
  */
 public class AsyncHttpClient extends AsyncTask<String, Void, String> {
 
-    private final String TAG = getClass().getName();
-
     private static final int BUFFER_SIZE = 4096;
 
     private boolean isPost;
@@ -145,7 +143,7 @@ public class AsyncHttpClient extends AsyncTask<String, Void, String> {
             }
         } catch (Exception e) {
             this.e = e;
-            Log.e(TAG, "Error executing request", e);
+            Log.e("DTag", "AsyncHttpClient: Error executing request", e);
         }
 
         return content;
@@ -204,7 +202,7 @@ public class AsyncHttpClient extends AsyncTask<String, Void, String> {
 
             System.out.println("Stream read");
         } else {
-            Log.d(TAG, "No file to download. Server replied HTTP code: " + responseCode);
+            Log.e("DTag", "AsyncHttpClient: No file to download. Server replied HTTP code: " + responseCode);
         }
 
         connection.disconnect();

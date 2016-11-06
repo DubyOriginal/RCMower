@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="v1.02"
-            android:id="@+id/textView2"
+            android:id="@+id/tvVersionName"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:textColor="#222" />
