@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnProgram:
                 break;
             case R.id.btnInfo:
+                intent = new Intent(this, InfoActivity.class);
                 break;
             case R.id.btnSettings:
                 intent = new Intent(this, SetupActivity.class);
@@ -66,6 +67,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (intent != null){
             startActivity(intent);
+            finish();
         }
     }
 

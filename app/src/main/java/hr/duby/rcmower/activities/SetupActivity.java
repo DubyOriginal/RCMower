@@ -17,14 +17,16 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
     private Button btnCancel, btnSave;
 
     @Override
+    //**********************************************************************************************
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
-        intiGUI();
+        initGUI();
     }
 
-    private void intiGUI() {
+    //**********************************************************************************************
+    private void initGUI() {
         etIPAddress = (EditText) findViewById(R.id.etIPAdress_setup);
         etPort_setup = (EditText) findViewById(R.id.etPort_setup);
         btnCancel = (Button) findViewById(R.id.btnCancel_setup);
@@ -39,6 +41,7 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
 
 
     @Override
+    //**********************************************************************************************
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btnCancel_setup:

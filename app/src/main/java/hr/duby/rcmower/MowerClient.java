@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import hr.duby.rcmower.network.AsyncHttpClient;
 import hr.duby.rcmower.network.AsyncHttpListener;
+import hr.duby.rcmower.network.HttpRequestMower;
 import hr.duby.rcmower.util.BasicParsing;
 import hr.duby.rcmower.util.BasicUtils;
 
@@ -33,6 +34,9 @@ public class MowerClient {
         void onResponse_GIO0();
     }
 
+    public interface OnResponse_HCSR04 {
+        void onResponse_HCSR04Done(JSONObject result);
+    }
 
     //**********************************************************************************************
     public static MowerClient getInstance() {
@@ -47,6 +51,41 @@ public class MowerClient {
     private void _____________REST_REQUEST_____________() {}
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
+
+    //**********************************************************************************************
+    public void request_HCSR04(Context context, final OnResponse_HCSR04 listener) {
+        DLog("Sending request_HCSR04....");
+        startTime = System.currentTimeMillis();
+
+        String reqURL = getBASE_URL(context) + Const.SENSOR_HCSR04;
+        DLog("reqURL: " + reqURL);
+
+        //new HttpRequestMower(reqURL).execute();
+
+        new AsyncHttpClient().get(reqURL, new AsyncHttpListener() {
+            @Override
+            public void onGetDone(JSONObject result) {
+                String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
+                DLog("RESPONSE (in: " + stopTime + ") -> request_HCSR04: " + result.toString());
+                if (listener != null) {
+                    listener.onResponse_HCSR04Done(result);
+                }
+            }
+
+            @Override
+            public void onPostDone(JSONObject object) {}
+
+            @Override
+            public void onError(Exception e) {
+                String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
+                DLog("RESPONSE (in: " + stopTime + ") -> request_HCSR04: ERROR");
+                DLog("RESPONSE -> request_HCSR04: ERROR -> " + e);
+                if (listener != null) {
+                    listener.onResponse_HCSR04Done(null);
+                }
+            }
+        });
+    }
 
     //**********************************************************************************************
     public void request_GIO0(D digital, final OnResponse_GIO0 listener) {
