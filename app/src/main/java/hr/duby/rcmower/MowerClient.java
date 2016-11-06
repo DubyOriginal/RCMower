@@ -66,7 +66,7 @@ public class MowerClient {
             @Override
             public void onGetDone(JSONObject result) {
                 String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
-                DLog("RESPONSE for request_HCSR04 (in: " + stopTime);
+                DLog("RESPONSE for request_HCSR04 (in: " + stopTime +")");
                 if (listener != null) {
                     listener.onResponse_HCSR04Done(result);
                 }

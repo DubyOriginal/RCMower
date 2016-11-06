@@ -78,7 +78,6 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
     //**********************************************************************************************
     private void startRequest_HCSR04() {
         MowerClient.getInstance().request_HCSR04(InfoActivity.this, new MowerClient.OnResponse_HCSR04(){
-
             @Override
             public void onResponse_HCSR04Done(JSONObject response) {
                 DLog("onResponse_HCSR04Done result: " + response);
@@ -92,28 +91,32 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
 
+    private String dist = "-";
+    private int distInt = 0;
     //**********************************************************************************************
     private void showResult_HCSR04(JSONObject response) {
+
         if (response != null) {
             String statusValue = JSONHelper.getJSONValue(response, "status");
             if (statusValue != null){
                 if (statusValue.equalsIgnoreCase("ok")) {
                     String distance = JSONHelper.getJSONValue(response, "distance");
-                    if (distance == null){ distance = "-";}
-                    final String dist = distance;
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvResponse.setText(dist);
-                            pbResponse.setProgress(Integer.valueOf(dist));
-                        }
-                    });
-
+                    if (distance == null){ distance = "0";}
+                    dist = distance;
+                    distInt = Integer.valueOf(dist);
 
                 } // statusValue NOT OK
             } // statusValue == NULL
-        }  // response == NULL
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvResponse.setText(dist);
+                pbResponse.setProgress(distInt);
+            }
+        });
+
     }
 
     private void _____________OTHER_____________() {}
