@@ -1,5 +1,21 @@
 apply plugin: 'com.android.application'
 
+def gitTag() {
+    def cmd = "git describe --abbrev=0 --tags"
+    def proc = cmd.execute()
+    return proc.text.trim()
+}
+
+def gitCommitNr() {
+    def cmd = "git rev-list HEAD --count"
+    def proc = cmd.execute()
+    return proc.text.trim().toInteger()
+}
+
+def verNameFull() {
+    return (gitTag() ? gitTag() + '.' + gitCommitNr().toString() : "NO_VERSION").toString()
+}
+
 android {
     compileSdkVersion 24
     buildToolsVersion '23.0.3'
@@ -8,10 +24,14 @@ android {
         applicationId "hr.duby.rcmower"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode gitCommitNr()
+        versionName verNameFull()
     }
     buildTypes {
+        buildTypes.each {
+            it.buildConfigField 'String', 'app_version', "\"" + verNameFull() + "\""
+            it.resValue 'string', 'app_version', "\"" + verNameFull() + "\""
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
