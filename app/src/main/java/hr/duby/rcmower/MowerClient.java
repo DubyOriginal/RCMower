@@ -7,7 +7,6 @@ import org.json.JSONObject;
 
 import hr.duby.rcmower.network.AsyncHttpClient;
 import hr.duby.rcmower.network.AsyncHttpListener;
-import hr.duby.rcmower.network.HttpRequestMower;
 import hr.duby.rcmower.util.BasicParsing;
 import hr.duby.rcmower.util.BasicUtils;
 

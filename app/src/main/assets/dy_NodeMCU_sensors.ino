@@ -36,7 +36,8 @@ WiFiServer server(80);
 void setup(){
   Serial.begin(115200);
   while (!Serial);
-  Serial.println("Begin");
+  Serial.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+  Serial.println("MowerApp v1.1.5");
 
   pinMode(trigPin, OUTPUT);  // Sets the trigPin as an Output
   pinMode(echoPin, INPUT);   // Sets the echoPin as an Input
@@ -45,19 +46,18 @@ void setup(){
 
   // Connect to WiFi network
   Serial.print("Connecting to ");
-  Serial.println(ssid);
+  Serial.print(ssid);
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("");
-  Serial.println("WiFi connected");
+  Serial.println("connected");
 
   // print the received signal strength:
   long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
+  Serial.print("Signal strength (RSSI):");
   Serial.print(rssi);
   Serial.println(" dBm");
 
@@ -67,7 +67,7 @@ void setup(){
 
   // Print the IP address
   Serial.println(WiFi.localIP());
-  Serial.println("**********************************************************************");
+  Serial.println("---------------------------------------------------------------------");
 }
 
 //*********************************************************************************************************
@@ -171,19 +171,12 @@ void loop() {
   int jsonSize = jsonResponse.length();
   String httpResponse = "HTTP/1.1 200 OK\r\n";
   httpResponse += "Content-Type: application/json;\r\n";
-  httpResponse += "Content-Length:" + String(jsonSize) + ";\r\n";
+  httpResponse += "Content-Length:" + String(jsonSize) + ";\r\n\r\n";  //NOTE - after header comes empty line
   httpResponse += jsonResponse + ";\r\n";
-
   client.print(httpResponse);   // Send the response to the client
   client.println();
 
   Serial.print(httpResponse);
-
-  // send a standard http response header
-  //client.println("HTTP/1.1 200 OK");
-  //client.println("Content-Type: application/json");
-  //client.println("Content-Type: text/html; charset=utf-8");
-  //client.println("Server: NodeMCU");
 
   delay(1);
   Serial.println("Client disonnected");

@@ -1,9 +1,7 @@
 package hr.duby.rcmower.activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +22,7 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
     //WIDGETS
     private Button btnHCSR04;
     private TextView tvResponse;
-    private ProgressBar pbResponse;
+    private ProgressBar pbResponse, pbInProgress;
 
     //VARS
     private String BASE_URL;
@@ -51,11 +49,14 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         btnHCSR04 = (Button) findViewById(R.id.btnHCSR);
         tvResponse = (TextView) findViewById(R.id.tvResponse);
         pbResponse = (ProgressBar) findViewById(R.id.pbResponse);
+        pbInProgress = (ProgressBar) findViewById(R.id.pbInProgress);
 
         //init value
         pbResponse.setMax(Const.HCSR04_MAX);
         pbResponse.setProgress(0);
         tvResponse.setText("");
+
+        pbInProgress.setVisibility(View.INVISIBLE);
 
         btnHCSR04.setOnClickListener(this);
     }
@@ -67,7 +68,6 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
             case R.id.btnHCSR:
                 startRequest_HCSR04();
                 break;
-
         }
     }
 
@@ -77,10 +77,12 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
 
     //**********************************************************************************************
     private void startRequest_HCSR04() {
+        pbInProgress.setVisibility(View.VISIBLE);
         MowerClient.getInstance().request_HCSR04(InfoActivity.this, new MowerClient.OnResponse_HCSR04(){
             @Override
             public void onResponse_HCSR04Done(JSONObject response) {
                 DLog("onResponse_HCSR04Done result: " + response);
+                pbInProgress.setVisibility(View.INVISIBLE);
                 showResult_HCSR04(response);
             }
         } );
@@ -114,6 +116,7 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
             public void run() {
                 tvResponse.setText(dist);
                 pbResponse.setProgress(distInt);
+                //startRequest_HCSR04();
             }
         });
 
