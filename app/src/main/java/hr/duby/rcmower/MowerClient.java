@@ -24,6 +24,15 @@ public class MowerClient {
     private String PORT;
     private String BASE_URL;
 
+    //**********************************************************************************************
+    public static MowerClient getInstance() {
+        synchronized (lock) {
+            if (_this == null) {
+                _this = new MowerClient();
+            }
+        }
+        return _this;
+    }
 
     private void ____________INTERFACES____________() {}
     //*****************************************************************************************************************************************
@@ -34,17 +43,11 @@ public class MowerClient {
     }
 
     public interface OnResponse_HCSR04 {
-        void onResponse_HCSR04Done(JSONObject result);
+        void onResponse_HCSR04Done(String resTime, JSONObject result);
     }
 
-    //**********************************************************************************************
-    public static MowerClient getInstance() {
-        synchronized (lock) {
-            if (_this == null) {
-                _this = new MowerClient();
-            }
-        }
-        return _this;
+    public interface OnResponse_ReadAnalog {
+        void onResponse_ReadAnalogDone(String resTime, JSONObject result);
     }
 
     private void _____________REST_REQUEST_____________() {}
@@ -67,7 +70,7 @@ public class MowerClient {
                 String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
                 DLog("RESPONSE for request_HCSR04 (in: " + stopTime +")");
                 if (listener != null) {
-                    listener.onResponse_HCSR04Done(result);
+                    listener.onResponse_HCSR04Done(stopTime, result);
                 }
             }
 
@@ -80,7 +83,40 @@ public class MowerClient {
                 DLog("RESPONSE (in: " + stopTime + ") -> request_HCSR04: ERROR");
                 DLog("RESPONSE -> request_HCSR04: ERROR -> " + e);
                 if (listener != null) {
-                    listener.onResponse_HCSR04Done(null);
+                    listener.onResponse_HCSR04Done(stopTime, null);
+                }
+            }
+        });
+    }
+
+    //**********************************************************************************************
+    public void request_ReadAnalog(Context context, final OnResponse_ReadAnalog listener) {
+        DLog("Sending request_ReadAnalog....");
+        startTime = System.currentTimeMillis();
+
+        String reqURL = getBASE_URL(context) + Const.SENSOR_ANALOG;
+        DLog("reqURL: " + reqURL);
+
+        new AsyncHttpClient().get(reqURL, new AsyncHttpListener() {
+            @Override
+            public void onGetDone(JSONObject result) {
+                String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
+                DLog("RESPONSE for request_ReadAnalog (in: " + stopTime +")");
+                if (listener != null) {
+                    listener.onResponse_ReadAnalogDone(stopTime, result);
+                }
+            }
+
+            @Override
+            public void onPostDone(JSONObject object) {}
+
+            @Override
+            public void onError(Exception e) {
+                String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
+                DLog("RESPONSE (in: " + stopTime + ") -> request_ReadAnalog: ERROR");
+                DLog("RESPONSE -> request_ReadAnalog: ERROR -> " + e);
+                if (listener != null) {
+                    listener.onResponse_ReadAnalogDone(stopTime, null);
                 }
             }
         });

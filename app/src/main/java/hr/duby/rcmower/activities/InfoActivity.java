@@ -20,8 +20,8 @@ import hr.duby.rcmower.util.JSONHelper;
 public class InfoActivity extends AppCompatActivity   implements View.OnClickListener {
 
     //WIDGETS
-    private Button btnHCSR04;
-    private TextView tvResponse;
+    private Button btnHCSR04, btnReadAnalog;
+    private TextView tvResponseValue, tvResponseTime;
     private ProgressBar pbResponse, pbInProgress;
 
     //VARS
@@ -47,18 +47,20 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
     //**********************************************************************************************
     private void initGUI() {
         btnHCSR04 = (Button) findViewById(R.id.btnHCSR);
-        tvResponse = (TextView) findViewById(R.id.tvResponse);
+        btnReadAnalog = (Button) findViewById(R.id.btnReadAnalog);
+        tvResponseValue = (TextView) findViewById(R.id.tvResponseValue);
+        tvResponseTime = (TextView) findViewById(R.id.tvResponseTime);
         pbResponse = (ProgressBar) findViewById(R.id.pbResponse);
         pbInProgress = (ProgressBar) findViewById(R.id.pbInProgress);
 
         //init value
-        pbResponse.setMax(Const.HCSR04_MAX);
         pbResponse.setProgress(0);
-        tvResponse.setText("");
+        tvResponseValue.setText("");
 
         pbInProgress.setVisibility(View.INVISIBLE);
 
         btnHCSR04.setOnClickListener(this);
+        btnReadAnalog.setOnClickListener(this);
     }
 
     @Override
@@ -67,6 +69,10 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         switch (view.getId()){
             case R.id.btnHCSR:
                 startRequest_HCSR04();
+                break;
+
+            case R.id.btnReadAnalog:
+                startRequest_ReadAnalog();
                 break;
         }
     }
@@ -77,13 +83,33 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
 
     //**********************************************************************************************
     private void startRequest_HCSR04() {
+        pbResponse.setMax(Const.HCSR04_MAX);
+        tvResponseTime.setText("");
         pbInProgress.setVisibility(View.VISIBLE);
         MowerClient.getInstance().request_HCSR04(InfoActivity.this, new MowerClient.OnResponse_HCSR04(){
             @Override
-            public void onResponse_HCSR04Done(JSONObject response) {
+            public void onResponse_HCSR04Done(String resTime, JSONObject response) {
                 DLog("onResponse_HCSR04Done result: " + response);
                 pbInProgress.setVisibility(View.INVISIBLE);
+                tvResponseTime.setText(resTime);
                 showResult_HCSR04(response);
+            }
+        } );
+
+    }
+
+    //**********************************************************************************************
+    private void startRequest_ReadAnalog() {
+        pbResponse.setMax(Const.ANALOG_MAX);
+        tvResponseTime.setText("");
+        pbInProgress.setVisibility(View.VISIBLE);
+        MowerClient.getInstance().request_ReadAnalog(InfoActivity.this, new MowerClient.OnResponse_ReadAnalog(){
+            @Override
+            public void onResponse_ReadAnalogDone(String resTime, JSONObject response) {
+                DLog("onResponse_ReadAnalogDone result: " + response);
+                pbInProgress.setVisibility(View.INVISIBLE);
+                tvResponseTime.setText(resTime);
+                showResult_ReadAnalog(response);
             }
         } );
 
@@ -93,19 +119,18 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
 
-    private String dist = "-";
-    private int distInt = 0;
+    private String value = "-";
+    private int valueInt = 0;
     //**********************************************************************************************
     private void showResult_HCSR04(JSONObject response) {
-
         if (response != null) {
             String statusValue = JSONHelper.getJSONValue(response, "status");
             if (statusValue != null){
                 if (statusValue.equalsIgnoreCase("ok")) {
                     String distance = JSONHelper.getJSONValue(response, "distance");
                     if (distance == null){ distance = "0";}
-                    dist = distance;
-                    distInt = Integer.valueOf(dist);
+                    value = distance;
+                    valueInt = Integer.valueOf(value);
 
                 } // statusValue NOT OK
             } // statusValue == NULL
@@ -114,12 +139,36 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvResponse.setText(dist);
-                pbResponse.setProgress(distInt);
+                tvResponseValue.setText(value);
+                pbResponse.setProgress(valueInt);
                 //startRequest_HCSR04();
             }
         });
+    }
 
+    //**********************************************************************************************
+    private void showResult_ReadAnalog(JSONObject response) {
+        if (response != null) {
+            String statusValue = JSONHelper.getJSONValue(response, "status");
+            if (statusValue != null){
+                if (statusValue.equalsIgnoreCase("ok")) {
+                    String analog = JSONHelper.getJSONValue(response, "analog");
+                    if (analog == null){ analog = "0";}
+                    value = analog;
+                    valueInt = Integer.valueOf(value);
+
+                } // statusValue NOT OK
+            } // statusValue == NULL
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvResponseValue.setText(value);
+                pbResponse.setProgress(valueInt);
+                //startRequest_HCSR04();
+            }
+        });
     }
 
     private void _____________OTHER_____________() {}

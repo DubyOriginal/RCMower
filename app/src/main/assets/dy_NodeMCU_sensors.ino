@@ -73,7 +73,7 @@ void setup(){
 //*********************************************************************************************************
 //*********************************************************************************************************
 String readHCSR04(){
-    Serial.println("readHCSR04");
+    Serial.print("readHCSR04 -> ");
 
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
@@ -86,11 +86,11 @@ String readHCSR04(){
 
     Serial.print("s = ");
     Serial.print(distance); // Sends the distance value into the Serial Port
-    Serial.println(" mm");
+    Serial.print(" mm");
 
-    Serial.print("t = ");
+    Serial.print(" (t = ");
     Serial.print(duration); // Sends the distance value into the Serial Port
-    Serial.println(" us");
+    Serial.println(" us)");
 
     String disStr = String(distance);
     return "\"sensor\":\"HC-SR04\",\"distance\":\"" + disStr;
@@ -109,6 +109,13 @@ String ledOFF(){
       digitalWrite(trigPin, LOW);
       Serial.println("---------------------------------------");
       return "\"sensor\":\"LED\", \"status\":\"OFF\"";
+}
+
+//*********************************************************************************************************
+String getExecutionTimeForStartTime(unsigned long startTime){
+    unsigned long endT = micros();
+    unsigned long delta = endT - startTime;
+    return String(delta);
 }
 
 //*********************************************************************************************************
@@ -140,7 +147,13 @@ void loop() {
 
   // Match the request
   if (req.indexOf("/sensor/hcsr04") != -1){
+
+    unsigned long startT = micros();
+    //----------------------------------------------
     String distance = readHCSR04();
+    //----------------------------------------------
+    Serial.println("readHCSR04 execution time: " + getExecutionTimeForStartTime(startT));
+
     jsonResponse = resHeader + distance + resFotter;
     //Serial.println(jsonResponse);
 
@@ -176,7 +189,7 @@ void loop() {
   client.print(httpResponse);   // Send the response to the client
   client.println();
 
-  Serial.print(httpResponse);
+  //Serial.print(httpResponse);
 
   delay(1);
   Serial.println("Client disonnected");

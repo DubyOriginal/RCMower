@@ -10,6 +10,7 @@ public class Const {
     public static final int SPEED = 120;
 
     public static final int HCSR04_MAX = 4000;   //4000mm -> 4m
+    public static final int ANALOG_MAX = 1023;   //0-1023
 
     //public final static String UNIT_IP   = "192.168.1.26";
     //public final static String UNIT_PORT = "80";
@@ -26,6 +27,7 @@ public class Const {
     public static final String CMD_SPEED     = "/cmd/speed/";
 
     public static final String SENSOR_HCSR04 = "/sensor/hcsr04";
+    public static final String SENSOR_ANALOG = "/sensor/analog";
 
     //shared prefs key
     public static final String PREF_IP = "PREF_IP";
