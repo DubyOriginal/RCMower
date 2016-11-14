@@ -8,8 +8,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 import hr.duby.rcmower.Const;
 import hr.duby.rcmower.MowerClient;
@@ -20,8 +31,8 @@ import hr.duby.rcmower.util.JSONHelper;
 public class InfoActivity extends AppCompatActivity   implements View.OnClickListener {
 
     //WIDGETS
-    private Button btnHCSR04, btnReadAnalog;
-    private TextView tvResponseValue, tvResponseTime;
+    private Button btnHCSR04, btnReadAnalog, btnReadSHT11;
+    private TextView tvResponseValue1, tvResponseTime;
     private ProgressBar pbResponse, pbInProgress;
 
     //VARS
@@ -48,19 +59,21 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
     private void initGUI() {
         btnHCSR04 = (Button) findViewById(R.id.btnHCSR);
         btnReadAnalog = (Button) findViewById(R.id.btnReadAnalog);
-        tvResponseValue = (TextView) findViewById(R.id.tvResponseValue);
+        btnReadSHT11  = (Button) findViewById(R.id.btnReadSHT11);
+        tvResponseValue1 = (TextView) findViewById(R.id.tvResponseValue1);
         tvResponseTime = (TextView) findViewById(R.id.tvResponseTime);
         pbResponse = (ProgressBar) findViewById(R.id.pbResponse);
         pbInProgress = (ProgressBar) findViewById(R.id.pbInProgress);
 
         //init value
         pbResponse.setProgress(0);
-        tvResponseValue.setText("");
+        tvResponseValue1.setText("");
 
         pbInProgress.setVisibility(View.INVISIBLE);
 
         btnHCSR04.setOnClickListener(this);
         btnReadAnalog.setOnClickListener(this);
+        btnReadSHT11.setOnClickListener(this);
     }
 
     @Override
@@ -74,6 +87,11 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
             case R.id.btnReadAnalog:
                 startRequest_ReadAnalog();
                 break;
+
+            case R.id.btnReadSHT11:
+                startRequest_ReadSHT11();
+                break;
+
         }
     }
 
@@ -115,12 +133,32 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
 
     }
 
+    //**********************************************************************************************
+    private void startRequest_ReadSHT11() {
+        pbResponse.setMax(Const.SHT11_MAX);
+        tvResponseTime.setText("");
+        pbInProgress.setVisibility(View.VISIBLE);
+        MowerClient.getInstance().request_ReadSHT11(InfoActivity.this, new MowerClient.OnResponse_ReadSHT11(){
+            @Override
+            public void onResponse_ReadSHT11Done(String resTime, JSONObject response) {
+                DLog("onResponse_ReadSHT11Done result: " + response);
+                pbInProgress.setVisibility(View.INVISIBLE);
+                tvResponseTime.setText(resTime);
+                showResult_ReadSHT11(response);
+            }
+        } );
+
+    }
+
+
     private void _____________SHOW_RESULT_____________() {}
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
 
-    private String value = "-";
-    private int valueInt = 0;
+    private String value1 = "-";
+    private String value2 = "-";
+    private int value1Int = 0;
+    private int value2Int = 0;
     //**********************************************************************************************
     private void showResult_HCSR04(JSONObject response) {
         if (response != null) {
@@ -129,8 +167,8 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
                 if (statusValue.equalsIgnoreCase("ok")) {
                     String distance = JSONHelper.getJSONValue(response, "distance");
                     if (distance == null){ distance = "0";}
-                    value = distance;
-                    valueInt = Integer.valueOf(value);
+                    value1 = distance;
+                    value1Int = Integer.valueOf(value1);
 
                 } // statusValue NOT OK
             } // statusValue == NULL
@@ -139,8 +177,8 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvResponseValue.setText(value);
-                pbResponse.setProgress(valueInt);
+                tvResponseValue1.setText(value1);
+                pbResponse.setProgress(value1Int);
                 //startRequest_HCSR04();
             }
         });
@@ -154,8 +192,8 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
                 if (statusValue.equalsIgnoreCase("ok")) {
                     String analog = JSONHelper.getJSONValue(response, "analog");
                     if (analog == null){ analog = "0";}
-                    value = analog;
-                    valueInt = Integer.valueOf(value);
+                    value1 = analog;
+                    value1Int = Integer.valueOf(value1);
 
                 } // statusValue NOT OK
             } // statusValue == NULL
@@ -164,8 +202,37 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                tvResponseValue.setText(value);
-                pbResponse.setProgress(valueInt);
+                tvResponseValue1.setText(value1);
+                pbResponse.setProgress(value1Int);
+                //startRequest_HCSR04();
+            }
+        });
+    }
+
+    private void showResult_ReadSHT11(JSONObject response) {
+        if (response != null) {
+            String statusValue = JSONHelper.getJSONValue(response, "status");
+            if (statusValue != null){
+                if (statusValue.equalsIgnoreCase("ok")) {
+                    String temp = JSONHelper.getJSONValue(response, "temp");
+                    String humidity = JSONHelper.getJSONValue(response, "humidity");
+                    if (temp == null){ temp = "-273";}
+                    value1 = temp;
+                    value1Int = Integer.valueOf(value1);
+
+                    if (humidity == null){ humidity = "0";}
+                    value2 = humidity;
+                    value2Int = Integer.valueOf(value2);
+
+                } // statusValue NOT OK
+            } // statusValue == NULL
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tvResponseValue1.setText(value1);
+                pbResponse.setProgress(value1Int);
                 //startRequest_HCSR04();
             }
         });

@@ -273,6 +273,7 @@ public class AsyncHttpClient extends AsyncTask<String, Void, String> {
     private HttpURLConnection doGet(URL url) throws Exception {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
+        //Log.d("DTag", "connection.getReadTimeout -> ");
         return connection;
     }
 

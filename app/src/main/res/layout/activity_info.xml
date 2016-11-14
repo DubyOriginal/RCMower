@@ -50,10 +50,10 @@
         </LinearLayout>
 
         <TextView
-            android:text="TextView"
+            android:text="507"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tvResponseValue"
+            android:id="@+id/tvResponseValue1"
             android:textSize="12sp"
             android:layout_marginTop="10dp" />
 
@@ -63,6 +63,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/pbResponse"
             android:progress="50" />
+
+        <TextView
+            android:text="temp = 23°C  /  humidity = 60%  "
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvResponseValue2"
+            android:textSize="12sp"
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 
@@ -86,6 +94,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btnReadAnalog"
+            android:textAllCaps="false"
+            android:layout_marginTop="7dp" />
+
+        <Button
+            android:text="Read SHT11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnReadSHT11"
             android:textAllCaps="false"
             android:layout_marginTop="7dp" />
 

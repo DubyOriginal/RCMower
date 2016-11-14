@@ -19,8 +19,6 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
 
     //WIDGETS
     private Button btnHome_cm;
-    private Button buttonPin11, buttonPin12, buttonPin13;
-    private EditText editTextIPAddress, editTextPortNumber;
 
     //VARs
     private String BASE_URL;
@@ -33,19 +31,10 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
 
         // assign buttons
         btnHome_cm = (Button) findViewById(R.id.btnHome_cm);
-        buttonPin11 = (Button)findViewById(R.id.buttonPin11);
-        buttonPin12 = (Button)findViewById(R.id.buttonPin12);
-        buttonPin13 = (Button)findViewById(R.id.buttonPin13);
 
-        // assign text inputs
-        editTextIPAddress = (EditText)findViewById(R.id.editTextIPAddress);
-        editTextPortNumber = (EditText)findViewById(R.id.editTextPortNumber);
 
         // set button listener (this class)
         btnHome_cm.setOnClickListener(this);
-        buttonPin11.setOnClickListener(this);
-        buttonPin12.setOnClickListener(this);
-        buttonPin13.setOnClickListener(this);
 
     }
 
@@ -72,18 +61,6 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
             case R.id.btnHome_cm:
                 gotoHomeActivity();
                 return;
-
-            case R.id.buttonPin11:
-                CMD = Const.CMD_FORWARD;
-                break;
-
-            case R.id.buttonPin12:
-                CMD = Const.CMD_BACK;
-                break;
-
-            case R.id.buttonPin13:
-                pinNum = "13";
-                break;
 
             default:
                 DLog("unknown button");

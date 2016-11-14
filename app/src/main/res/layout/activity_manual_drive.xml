@@ -9,63 +9,10 @@
 
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="IP Address:" />
-
-        <EditText
-            android:id="@+id/editTextIPAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="e.g. 192.168.0.10" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Port Number:" />
-
-        <EditText
-            android:id="@+id/editTextPortNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="e.g. 80"
-            android:inputType="number" />
-
-        <Button
-            android:id="@+id/buttonPin11"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pin 11" />
-
-        <Button
-            android:id="@+id/buttonPin12"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pin 12" />
-
-        <Button
-            android:id="@+id/buttonPin13"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pin 13" />
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom|center_horizontal"
-        android:orientation="vertical"
-        android:background="@drawable/ic_moveing_control">
+        android:orientation="horizontal"
+        android:gravity="end">
 
         <Button
             android:id="@+id/btnHome_cm"
@@ -73,6 +20,13 @@
             android:layout_height="50dp"
             android:drawableTop="@drawable/ic_home"
             android:drawablePadding="10dp"/>
+
+        <FrameLayout
+            android:layout_width="353dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_moveing_control">
+
+        </FrameLayout>
 
     </LinearLayout>
 

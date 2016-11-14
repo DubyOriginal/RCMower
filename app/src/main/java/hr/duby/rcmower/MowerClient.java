@@ -50,6 +50,10 @@ public class MowerClient {
         void onResponse_ReadAnalogDone(String resTime, JSONObject result);
     }
 
+    public interface OnResponse_ReadSHT11 {
+        void onResponse_ReadSHT11Done(String resTime, JSONObject result);
+    }
+
     private void _____________REST_REQUEST_____________() {}
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
@@ -117,6 +121,39 @@ public class MowerClient {
                 DLog("RESPONSE -> request_ReadAnalog: ERROR -> " + e);
                 if (listener != null) {
                     listener.onResponse_ReadAnalogDone(stopTime, null);
+                }
+            }
+        });
+    }
+
+    //**********************************************************************************************
+    public void request_ReadSHT11(Context context, final OnResponse_ReadSHT11 listener) {
+        DLog("Sending request_ReadSHT11....");
+        startTime = System.currentTimeMillis();
+
+        String reqURL = getBASE_URL(context) + Const.SENSOR_SHT11;
+        DLog("reqURL: " + reqURL);
+
+        new AsyncHttpClient().get(reqURL, new AsyncHttpListener() {
+            @Override
+            public void onGetDone(JSONObject result) {
+                String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
+                DLog("RESPONSE for request_ReadSHT11 (in: " + stopTime +")");
+                if (listener != null) {
+                    listener.onResponse_ReadSHT11Done(stopTime, result);
+                }
+            }
+
+            @Override
+            public void onPostDone(JSONObject object) {}
+
+            @Override
+            public void onError(Exception e) {
+                String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
+                DLog("RESPONSE (in: " + stopTime + ") -> request_ReadSHT11: ERROR");
+                DLog("RESPONSE -> request_ReadSHT11: ERROR -> " + e);
+                if (listener != null) {
+                    listener.onResponse_ReadSHT11Done(stopTime, null);
                 }
             }
         });
