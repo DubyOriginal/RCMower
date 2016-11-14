@@ -12,21 +12,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="end">
+        android:gravity="center_vertical|end">
 
-        <Button
-            android:id="@+id/btnHome_cm"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:drawableTop="@drawable/ic_home"
-            android:drawablePadding="10dp"/>
-
-        <FrameLayout
-            android:layout_width="353dp"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_moveing_control">
+            android:layout_weight="1">
 
-        </FrameLayout>
+            <Button
+                android:id="@+id/btnHome_cm"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:drawableTop="@drawable/ic_home"
+                android:drawablePadding="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llTouchPad"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:orientation="vertical"
+            android:background="@drawable/shape_touchpad"
+            android:contentDescription="">
+
+        </LinearLayout>
 
     </LinearLayout>
 

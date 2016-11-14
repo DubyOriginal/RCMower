@@ -1,24 +1,36 @@
 package hr.duby.rcmower.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseArray;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 
-import hr.duby.rcmower.Const;
+import java.util.HashSet;
+
 import hr.duby.rcmower.MowerClient;
 import hr.duby.rcmower.R;
+import hr.duby.rcmower.gui.TouchPadDraw;
 import hr.duby.rcmower.network.HttpRequestMower;
 
-public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener {
+
+public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
 
     //WIDGETS
     private Button btnHome_cm;
+    private LinearLayout llTouchPad;
 
     //VARs
     private String BASE_URL;
@@ -31,6 +43,8 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
 
         // assign buttons
         btnHome_cm = (Button) findViewById(R.id.btnHome_cm);
+        llTouchPad = (LinearLayout) findViewById(R.id.llTouchPad);
+        llTouchPad.addView(new TouchPadDraw(this));
 
 
         // set button listener (this class)
@@ -83,6 +97,11 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
 
     }
 
+    @Override
+    //**********************************************************************************************
+    public boolean onTouch(View v, MotionEvent event) {
+        return false;
+    }
 
     private void _____________OTHER_____________() {}
     //*************************************************************************************************************************************************
@@ -123,4 +142,5 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         String className = this.getClass().getSimpleName();
         Log.d("DTag", className + ": " + msg);
     }
+
 }

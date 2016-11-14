@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/center_point">
+        <bitmap
+            android:src="@drawable/center_point"
+            android:gravity="center"/>
+    </item>
+
+    <item android:id="@+id/layer_shape_circle">
+        <shape android:shape="oval">
+            <solid android:color="#aa66aa66" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/black"/>
+        </shape>
+    </item>
+</layer-list>
+
+
+<!--
+    <item android:id="@+id/center_point">
+        <bitmap
+            android:src="@drawable/shape_center_point"
+            android:gravity="center"/>
+    </item>
+-->
+
