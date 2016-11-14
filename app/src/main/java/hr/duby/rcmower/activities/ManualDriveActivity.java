@@ -1,39 +1,34 @@
 package hr.duby.rcmower.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-import java.util.HashSet;
+import org.json.JSONObject;
 
+import hr.duby.rcmower.Const;
 import hr.duby.rcmower.MowerClient;
 import hr.duby.rcmower.R;
+import hr.duby.rcmower.data.MPoint;
 import hr.duby.rcmower.gui.TouchPadDraw;
 import hr.duby.rcmower.network.HttpRequestMower;
 
 
-public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
+public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener {
 
     //WIDGETS
     private Button btnHome_cm;
-    private LinearLayout llTouchPad;
+    private RelativeLayout rlTouchPad;
 
     //VARs
     private String BASE_URL;
+    private TouchPadDraw touchPadDraw;
 
     @Override
     //**********************************************************************************************
@@ -43,9 +38,9 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
 
         // assign buttons
         btnHome_cm = (Button) findViewById(R.id.btnHome_cm);
-        llTouchPad = (LinearLayout) findViewById(R.id.llTouchPad);
-        llTouchPad.addView(new TouchPadDraw(this));
-
+        rlTouchPad = (RelativeLayout) findViewById(R.id.llTouchPad);
+        touchPadDraw = new TouchPadDraw(this);
+        rlTouchPad.addView(touchPadDraw);
 
         // set button listener (this class)
         btnHome_cm.setOnClickListener(this);
@@ -59,6 +54,20 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         keepNavBarHidden();
 
         BASE_URL = MowerClient.getInstance().getBASE_URL(this);
+
+        startRequest_Drive();
+
+    }
+
+    //**********************************************************************************************
+    private void startRequest_Drive() {
+        MowerClient.getInstance().request_DRIVE(ManualDriveActivity.this, touchPadDraw.getRelativePoint(), new MowerClient.OnResponse_Drive() {
+            @Override
+            public void onResponse_DriveDone(String resTime, JSONObject result) {
+                startRequest_Drive();
+            }
+        });
+
     }
 
     private void _____________EVENT_HANDLING_____________() {}
@@ -95,12 +104,6 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         // execute HTTP request
          new HttpRequestMower(reqURL).execute();
 
-    }
-
-    @Override
-    //**********************************************************************************************
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
     }
 
     private void _____________OTHER_____________() {}

@@ -1,10 +1,12 @@
 package hr.duby.rcmower;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.util.Log;
 
 import org.json.JSONObject;
 
+import hr.duby.rcmower.data.MPoint;
 import hr.duby.rcmower.network.AsyncHttpClient;
 import hr.duby.rcmower.network.AsyncHttpListener;
 import hr.duby.rcmower.util.BasicParsing;
@@ -54,9 +56,46 @@ public class MowerClient {
         void onResponse_ReadSHT11Done(String resTime, JSONObject result);
     }
 
+    public interface OnResponse_Drive {
+        void onResponse_DriveDone(String resTime, JSONObject result);
+    }
+
     private void _____________REST_REQUEST_____________() {}
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
+
+    //**********************************************************************************************
+    public void request_DRIVE(Context context, MPoint point, final OnResponse_Drive listener) {
+        DLog("Sending request_DRIVE....");
+        startTime = System.currentTimeMillis();
+
+        String reqURL = getBASE_URL(context) + Const.CMD_DRIVE + point.getX() + "," + point.getY();
+        DLog("reqURL: " + reqURL);
+
+        new AsyncHttpClient().get(reqURL, new AsyncHttpListener() {
+            @Override
+            public void onGetDone(JSONObject result) {
+                String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
+                DLog("RESPONSE for request_DRIVE (in: " + stopTime +")");
+                if (listener != null) {
+                    listener.onResponse_DriveDone(stopTime, result);
+                }
+            }
+
+            @Override
+            public void onPostDone(JSONObject object) {}
+
+            @Override
+            public void onError(Exception e) {
+                String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
+                DLog("RESPONSE (in: " + stopTime + ") -> request_DRIVE: ERROR");
+                DLog("RESPONSE -> request_DRIVE: ERROR -> " + e);
+                if (listener != null) {
+                    listener.onResponse_DriveDone(stopTime, null);
+                }
+            }
+        });
+    }
 
     //**********************************************************************************************
     public void request_HCSR04(Context context, final OnResponse_HCSR04 listener) {

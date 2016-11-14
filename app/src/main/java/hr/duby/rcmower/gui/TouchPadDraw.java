@@ -6,11 +6,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.HashSet;
+import hr.duby.rcmower.data.MPoint;
+
 
 /**
  * Created by Duby on 14.11.2016..
@@ -38,30 +38,31 @@ public class TouchPadDraw extends View {
     //VARS
     private Paint mCirclePaint;
     private Paint strokePaint;
+    private Paint textPaint;
     private CircleArea mCircleArea;
+    private int tpW, tpH, padRadius;
+    private int relativeX;
+    private int relativeY;
 
     //FLAGS
     boolean flag = false;
+    private int pRadius = 60;
 
-    /** All available circles */
-    //private HashSet<CircleArea> mCircles = new HashSet<CircleArea>(CIRCLES_LIMIT);
-    //private SparseArray<CircleArea> mCirclePointer = new SparseArray<CircleArea>(CIRCLES_LIMIT);
-
-    /**
-     * Default constructor
-     *
-     * @param ct {@link android.content.Context}
-     */
     public TouchPadDraw(final Context ct) {
         super(ct);
         init(ct);
+        //DLog("llTouchPad -> tpW = " + this.getWidth() + ", tpH = " + this.getHeight());
     }
 
+    public MPoint getRelativePoint() {
+        return new MPoint(relativeX, relativeY);
+    }
+
+
+    //**********************************************************************************************
     private void init(final Context ct) {
-        // Generate bitmap used for background
-        //mBitmap = BitmapFactory.decodeResource(ct.getResources(), R.drawable.abc_ic_menu_cut_mtrl_alpha);
         mCirclePaint = new Paint();
-        mCirclePaint.setColor(Color.argb(100,200,60,150));
+        mCirclePaint.setColor(Color.argb(150,200,60,150));
         mCirclePaint.setStrokeWidth(40);
         mCirclePaint.setStyle(Paint.Style.FILL);
 
@@ -69,29 +70,53 @@ public class TouchPadDraw extends View {
         strokePaint.setColor(Color.argb(100,0,100,0));
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setStrokeWidth(3);
+
+        textPaint = new Paint();
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(40);
     }
 
     @Override
-    public void onDraw(final Canvas canv) {
+    //**********************************************************************************************
+    public void onDraw(final Canvas canvas) {
+        //DLog("onDraw");
+
+        if (canvas != null){
+            tpW = canvas.getWidth();
+            tpH = canvas.getHeight();
+            padRadius = tpH / 2;
+        }
+        //DLog("llTouchPad -> tpW = " + tpW + ", tpH = " + tpH);
+
         if (mCircleArea != null){
-            canv.drawCircle(mCircleArea.centerX, mCircleArea.centerY, mCircleArea.radius, mCirclePaint);
-            canv.drawCircle(mCircleArea.centerX, mCircleArea.centerY, mCircleArea.radius, strokePaint);
+            int pPosX = mCircleArea.centerX;
+            int pPosY = mCircleArea.centerY;
+            int radius = mCircleArea.radius;
+
+            canvas.drawCircle(pPosX, pPosY, pRadius, mCirclePaint);
+            canvas.drawCircle(pPosX, pPosY, pRadius, strokePaint);
+
+            relativeX = pPosX-padRadius;
+            relativeY = (pPosY-padRadius)*-1;
+            String posStr = "X: " + relativeX + "  Y: " + relativeY;
+            canvas.drawText(posStr, tpW-280, tpH-50, textPaint);
         }
     }
 
     @Override
+    //**********************************************************************************************
     public boolean onTouchEvent(@Nullable final MotionEvent event) {
         boolean handled = false;
         CircleArea touchedCircle;
         int xTouch;
         int yTouch;
-        int actionIndex = event.getActionIndex();
+        //int actionIndex = event.getActionIndex();
 
         // get touch event coordinates and make transparent circle from it
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                DLog("MotionEvent.ACTION_DOWN");
-
+                //DLog("MotionEvent.ACTION_DOWN");
                 xTouch = (int) event.getX(0);
                 yTouch = (int) event.getY(0);
 
@@ -105,27 +130,25 @@ public class TouchPadDraw extends View {
                 handled = true;
                 break;
             case MotionEvent.ACTION_MOVE:
-                final int pointerCount = event.getPointerCount();
+                //DLog("MotionEvent.ACTION_MOVE");
 
-                for (actionIndex = 0; actionIndex < pointerCount; actionIndex++) {
-                    xTouch = (int) event.getX(actionIndex);
-                    yTouch = (int) event.getY(actionIndex);
+                xTouch = (int) event.getX();
+                yTouch = (int) event.getY();
+                int radius = (int) Math.sqrt(Math.pow((xTouch-600), 2) + Math.pow((yTouch-600), 2));
 
-                    touchedCircle = mCircleArea;  //mCirclePointer.get(pointerId);
-
-                    if (null != touchedCircle) {
-                        touchedCircle.centerX = xTouch;
-                        touchedCircle.centerY = yTouch;
-                    }
+                if (mCircleArea != null) {
+                    mCircleArea.centerX = xTouch;
+                    mCircleArea.centerY = yTouch;
+                    mCircleArea.radius = radius;
                 }
+
                 invalidate();
                 handled = true;
                 break;
 
             case MotionEvent.ACTION_UP:
-                DLog("MotionEvent.ACTION_UP");
-                //invalidate();
-                returnPointerToCenter();
+                setCenterPoint();
+                invalidate();
                 handled = true;
                 break;
 
@@ -150,14 +173,9 @@ public class TouchPadDraw extends View {
     }
 
     //**********************************************************************************************
-    private void returnPointerToCenter(){
-        int centerX = 100;
-        int centerY = 100;
-
-        mCircleArea.centerX = centerX;
-        mCircleArea.centerY = centerY;
-
-        invalidate();
+    private void setCenterPoint(){
+        mCircleArea.centerX = tpW / 2;
+        mCircleArea.centerY = tpH / 2;
     }
 
     /**
@@ -172,7 +190,7 @@ public class TouchPadDraw extends View {
         CircleArea touchedCircle = getTouchedCircle(xTouch, yTouch);
 
         if (null == touchedCircle) {
-            touchedCircle = new CircleArea(xTouch, yTouch, 50/*mRadiusGenerator.nextInt(RADIUS_LIMIT) + RADIUS_LIMIT*/);
+            touchedCircle = new CircleArea(xTouch, yTouch, pRadius);
 
             if (flag == false) {
                 mCircleArea = touchedCircle;
@@ -201,7 +219,6 @@ public class TouchPadDraw extends View {
 
         return touched;
     }
-
 
     //**********************************************************************************************
     private void DLog(String msg) {

@@ -4,7 +4,7 @@ package hr.duby.rcmower;
  * Created by Duby on 18.9.2016..
  */
 public class Const {
-
+    public static final long SPLASH_DELAY = 200;
     public static final int LOW = 0;
     public static final int HIGHT = 1;
     public static final int SPEED = 120;
@@ -20,6 +20,8 @@ public class Const {
     //**********************************************************************************************
     //public static final String BASE_URL_RADIO = "http://test.mradio.tria.hr/";
     //public static final String BASE_URL    = "http://" + UNIT_IP + ":" + UNIT_PORT;
+    public static final String CMD_DRIVE     = "/cmd/drive/";
+
     public static final String CMD_FORWARD   = "/cmd/forward";
     public static final String CMD_BACK      = "/cmd/back";
     public static final String CMD_RLEFT     = "/cmd/rotateleft";
@@ -40,4 +42,5 @@ public class Const {
     public static final int MSG_TYPE_ERROR = 8001;
     public static final int MSG_TYPE_WARNING = 8002;
     public static final int MSG_TYPE_INFO = 8003;
+
 }

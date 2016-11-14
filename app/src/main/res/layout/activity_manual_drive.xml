@@ -26,9 +26,10 @@
                 android:layout_height="50dp"
                 android:drawableTop="@drawable/ic_home"
                 android:drawablePadding="10dp"/>
+
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/llTouchPad"
             android:layout_width="300dp"
             android:layout_height="300dp"
@@ -36,7 +37,7 @@
             android:background="@drawable/shape_touchpad"
             android:contentDescription="">
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 

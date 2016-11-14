@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import hr.duby.rcmower.BuildConfig;
+import hr.duby.rcmower.Const;
 import hr.duby.rcmower.R;
 
 public class SplashActivity extends AppCompatActivity {
@@ -21,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
         Thread timer = new Thread(){
             public void run(){
                 try {
-                    sleep(2000);
+                    sleep(Const.SPLASH_DELAY);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }finally{
