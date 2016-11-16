@@ -66,17 +66,18 @@ public class MowerClient {
 
     //**********************************************************************************************
     public void request_DRIVE(Context context, MPoint point, final OnResponse_Drive listener) {
-        DLog("Sending request_DRIVE....");
+        //DLog("Sending request_DRIVE....");
         startTime = System.currentTimeMillis();
 
         String reqURL = getBASE_URL(context) + Const.CMD_DRIVE + point.getX() + "," + point.getY();
-        DLog("reqURL: " + reqURL);
+        DLog("Sending request_DRIVE.... " + reqURL);
+        //DLog("reqURL: " + reqURL);
 
         new AsyncHttpClient().get(reqURL, new AsyncHttpListener() {
             @Override
             public void onGetDone(JSONObject result) {
                 String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
-                DLog("RESPONSE for request_DRIVE (in: " + stopTime +")");
+                DLog("RESPONSE: request_DRIVE (" + stopTime + ") -> OK");
                 if (listener != null) {
                     listener.onResponse_DriveDone(stopTime, result);
                 }
@@ -88,8 +89,8 @@ public class MowerClient {
             @Override
             public void onError(Exception e) {
                 String stopTime = BasicParsing.getResponseTimeForStartTime(startTime);
-                DLog("RESPONSE (in: " + stopTime + ") -> request_DRIVE: ERROR");
-                DLog("RESPONSE -> request_DRIVE: ERROR -> " + e);
+                DLog("RESPONSE: request_DRIVE (" + stopTime + ") -> ERROR");
+                //DLog("RESPONSE -> request_DRIVE: ERROR -> " + e);
                 if (listener != null) {
                     listener.onResponse_DriveDone(stopTime, null);
                 }

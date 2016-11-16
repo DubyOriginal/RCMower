@@ -43,6 +43,7 @@ public class TouchPadDraw extends View {
     private int tpW, tpH, padRadius;
     private int relativeX;
     private int relativeY;
+    private float rangeFactor = (1023f / 600f);    //1.7
 
     //FLAGS
     boolean flag = false;
@@ -97,8 +98,13 @@ public class TouchPadDraw extends View {
             canvas.drawCircle(pPosX, pPosY, pRadius, mCirclePaint);
             canvas.drawCircle(pPosX, pPosY, pRadius, strokePaint);
 
-            relativeX = pPosX-padRadius;
-            relativeY = (pPosY-padRadius)*-1;
+            int relX = Math.round((float)(pPosX-padRadius) * rangeFactor);
+            int relY = Math.round(((float)(pPosY-padRadius)*-1f) * rangeFactor);
+            // axes rotation 45°
+            // cosiFi = sin45 = cos45 = 0.70710678
+            final float cosiFi = 0.70710678f;
+            relativeX = Math.round(relX*cosiFi + relY*cosiFi);
+            relativeY = Math.round(-1*relX*cosiFi + relY*cosiFi);
             String posStr = "X: " + relativeX + "  Y: " + relativeY;
             canvas.drawText(posStr, tpW-280, tpH-50, textPaint);
         }

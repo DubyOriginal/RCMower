@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import org.json.JSONObject;
 
@@ -20,15 +22,17 @@ import hr.duby.rcmower.gui.TouchPadDraw;
 import hr.duby.rcmower.network.HttpRequestMower;
 
 
-public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener {
+public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     //WIDGETS
     private Button btnHome_cm;
     private RelativeLayout rlTouchPad;
+    private Switch switchRun;
 
     //VARs
     private String BASE_URL;
     private TouchPadDraw touchPadDraw;
+    private boolean RUNING = false;
 
     @Override
     //**********************************************************************************************
@@ -38,12 +42,14 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
 
         // assign buttons
         btnHome_cm = (Button) findViewById(R.id.btnHome_cm);
+        switchRun = (Switch) findViewById(R.id.switchRun);
         rlTouchPad = (RelativeLayout) findViewById(R.id.llTouchPad);
         touchPadDraw = new TouchPadDraw(this);
         rlTouchPad.addView(touchPadDraw);
 
         // set button listener (this class)
         btnHome_cm.setOnClickListener(this);
+        switchRun.setOnCheckedChangeListener(this);
 
     }
 
@@ -55,24 +61,38 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
 
         BASE_URL = MowerClient.getInstance().getBASE_URL(this);
 
-        startRequest_Drive();
-
     }
 
     //**********************************************************************************************
     private void startRequest_Drive() {
-        MowerClient.getInstance().request_DRIVE(ManualDriveActivity.this, touchPadDraw.getRelativePoint(), new MowerClient.OnResponse_Drive() {
-            @Override
-            public void onResponse_DriveDone(String resTime, JSONObject result) {
-                startRequest_Drive();
-            }
-        });
-
+        if (RUNING){
+            DLog("-------------------------------------------------------");
+            MowerClient.getInstance().request_DRIVE(ManualDriveActivity.this, touchPadDraw.getRelativePoint(), new MowerClient.OnResponse_Drive() {
+                @Override
+                public void onResponse_DriveDone(String resTime, JSONObject result) {
+                    startRequest_Drive();
+                }
+            });
+        }
     }
 
     private void _____________EVENT_HANDLING_____________() {}
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
+
+    @Override
+    //**********************************************************************************************
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        DLog("onCheckedChanged");
+        if (buttonView.getId() == R.id.switchRun){
+            if (buttonView != null && isChecked){
+                RUNING = true;
+                startRequest_Drive();
+            }else{
+                RUNING = false;
+            }
+        }
+    }
 
     @Override
     //**********************************************************************************************
@@ -98,11 +118,11 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
             }
         });*/
 
-        String reqURL = BASE_URL + CMD;
-        DLog(reqURL);
+        //String reqURL = BASE_URL + CMD;
+        //DLog(reqURL);
 
         // execute HTTP request
-         new HttpRequestMower(reqURL).execute();
+        //new HttpRequestMower(reqURL).execute();
 
     }
 
@@ -145,5 +165,6 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         String className = this.getClass().getSimpleName();
         Log.d("DTag", className + ": " + msg);
     }
+
 
 }

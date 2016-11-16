@@ -143,7 +143,8 @@ public class AsyncHttpClient extends AsyncTask<String, Void, String> {
             }
         } catch (Exception e) {
             this.e = e;
-            Log.e("DTag", "AsyncHttpClient: Error executing request", e);
+            Log.e("MowerE", "AsyncHttpClient: Error executing request", e);
+            Log.e("DTag", "AsyncHttpClient: Error executing request");
         }
 
         return content;
