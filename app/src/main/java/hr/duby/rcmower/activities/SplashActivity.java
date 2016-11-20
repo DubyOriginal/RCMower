@@ -17,7 +17,10 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         TextView tvVersionName = (TextView) findViewById(R.id.tvVersionName);
-        tvVersionName.setText(BuildConfig.VERSION_NAME);
+        if (tvVersionName != null){
+            tvVersionName.setText(BuildConfig.VERSION_NAME);
+
+        }
 
         Thread timer = new Thread(){
             public void run(){
