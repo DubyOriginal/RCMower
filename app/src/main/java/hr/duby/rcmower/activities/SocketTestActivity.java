@@ -267,10 +267,10 @@ public class SocketTestActivity extends AppCompatActivity implements Runnable, V
                     //size[1] = (byte)(data_size >> 8);
                 }
 
-                DLog("---button-------> " +  cmd_buffer);
+                DLog("CMD: " +  cmd_buffer);
 
                 data_size = cmd_buffer.length();
-                DLog("----data_size--------> " + data_size);
+                DLog("CMD_size: " + data_size);
 
                 byte[] data = cmd_buffer.getBytes();
 
@@ -279,7 +279,7 @@ public class SocketTestActivity extends AppCompatActivity implements Runnable, V
                 size[1] = (byte) ((data_size & 0xff00) >> 8);       //0으로 채운다.
 
                 int s = ((size[1] << 8) & 0xff00) + (size[0] & 0x00ff);
-                DLog("------result------> " + s);
+                DLog("result: " + s);
 
                 m_out_stream.write(size);   // Write size information.
                 m_out_stream.write(data);   //Write a byte array.
@@ -287,11 +287,10 @@ public class SocketTestActivity extends AppCompatActivity implements Runnable, V
 
 
             } catch (IOException e) {
-
                 m_text_view.setText(e.getMessage());
             }
         } else {
-            DLog("---------non connect");
+            DLog("Not connected or Socked Closed!");
         }
     }
 
