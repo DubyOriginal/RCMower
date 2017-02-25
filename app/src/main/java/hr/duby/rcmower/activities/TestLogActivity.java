@@ -1,8 +1,8 @@
 package hr.duby.rcmower.activities;
 
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,19 +16,13 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.handshake.ServerHandshake;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import hr.duby.rcmower.R;
 
-public class SocketTestActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class TestLogActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     final String SERVER_IP = "192.168.4.1";
     final int SERVER_PORT = 81;
@@ -92,7 +86,7 @@ public class SocketTestActivity extends AppCompatActivity implements View.OnClic
         super.onStop();
     }
 
-    private void updateMsgList(final String msg_code){
+    private void updateMsgList(final String msg_code) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -113,12 +107,16 @@ public class SocketTestActivity extends AppCompatActivity implements View.OnClic
         }
 
         //***********************************************************************************************************************************
-        mWebSocketClient = new WebSocketClient(uri, new Draft_17()){
+        mWebSocketClient = new WebSocketClient(uri, new Draft_17()) {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
                 DLog("Websocket Opened");
                 updateMsgList("Websocket Opened");
                 mWebSocketClient.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL);
+
+                DLog("mWebSocketClient.getDraft: " + mWebSocketClient.getDraft());
+                DLog("mWebSocketClient.getURI: " + mWebSocketClient.getURI());
+                DLog("mWebSocketClient.getConnection: " + mWebSocketClient.getConnection());
             }
 
             @Override
@@ -128,13 +126,14 @@ public class SocketTestActivity extends AppCompatActivity implements View.OnClic
                     @Override
                     public void run() {
                         m_tv_log.setText(m_tv_log.getText() + "\n" + message);
+                        DLog("onMessage -> " + message);
                     }
                 });
             }
 
             @Override
             public void onClose(int i, String s, boolean b) {
-                DLog("Websocket Closed " + s);
+                DLog("Websocket Closed: " + s);
                 updateMsgList("Websocket Closed " + s);
             }
 
@@ -149,8 +148,18 @@ public class SocketTestActivity extends AppCompatActivity implements View.OnClic
 
     public void sendMessage(String msg) {
         DLog("webSocketClient -> sendMessage: " + msg);
-        mWebSocketClient.send(msg);
-        etInputMsg.setText("");
+
+        if (mWebSocketClient != null) {
+            try {
+                mWebSocketClient.send(msg);
+                etInputMsg.setText("");
+
+            }catch (Throwable tErr){
+                DLog("Unable to send message! \n" + tErr);
+            }
+        } else {
+
+        }
     }
 
 
@@ -162,11 +171,11 @@ public class SocketTestActivity extends AppCompatActivity implements View.OnClic
 
         int vId = view.getId();
         //******************************************
-        if(vId == R.id.btnPumpOn_sta) {
+        if (vId == R.id.btnPumpOn_sta) {
             msg_code = "p_on";
-        }else if (vId == R.id.btnPumpOff_sta){
+        } else if (vId == R.id.btnPumpOff_sta) {
             msg_code = "p_off";
-        }else if (vId == R.id.btnSendMsg_sta){
+        } else if (vId == R.id.btnSendMsg_sta) {
             msg_code = etInputMsg.getText().toString();
         }
 

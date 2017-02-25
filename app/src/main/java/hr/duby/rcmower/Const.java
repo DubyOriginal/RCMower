@@ -16,6 +16,10 @@ public class Const {
     //public final static String UNIT_IP   = "192.168.1.26";
     //public final static String UNIT_PORT = "80";
 
+    //WEB SOCKET URI
+    //**********************************************************************************************
+    public static final String WS_URI = "ws://192.168.4.1:81";
+
     //WEB API - REST
     //**********************************************************************************************
     //public static final String BASE_URL_RADIO = "http://test.mradio.tria.hr/";

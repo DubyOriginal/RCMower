@@ -8,22 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 import hr.duby.rcmower.Const;
 import hr.duby.rcmower.MowerClient;
+import hr.duby.rcmower.MowerWSClient;
 import hr.duby.rcmower.R;
 import hr.duby.rcmower.util.JSONHelper;
 
@@ -45,6 +35,14 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         setContentView(R.layout.activity_info);
 
         initGUI();
+
+        MowerWSClient.getInstance().connectWebSocket(new MowerWSClient.OnWebSocketEvent(){
+
+            @Override
+            public void onWebSocketEvent(String eventCode, String eventMsg) {
+                DLog("eventCode: " + eventCode + ", eventMsg: " + eventMsg);
+            }
+        });
     }
 
     @Override
@@ -52,7 +50,9 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
     protected void onResume() {
         super.onResume();
 
-        BASE_URL = MowerClient.getInstance().getBASE_URL(this);
+        //BASE_URL = MowerClient.getInstance().getBASE_URL(this);
+
+
     }
 
     //**********************************************************************************************
@@ -121,6 +121,15 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         pbResponse.setMax(Const.ANALOG_MAX);
         tvResponseTime.setText("");
         pbInProgress.setVisibility(View.VISIBLE);
+
+        MowerWSClient.getInstance().sendMessage("A105", new MowerWSClient.OnWebSocketEvent() {
+            @Override
+            public void onWebSocketEvent(String eventCode, String eventMsg) {
+                DLog("eventCode: " + eventCode + ", eventMsg: " + eventMsg);
+            }
+        });
+
+        /*
         MowerClient.getInstance().request_ReadAnalog(InfoActivity.this, new MowerClient.OnResponse_ReadAnalog(){
             @Override
             public void onResponse_ReadAnalogDone(String resTime, JSONObject response) {
@@ -129,7 +138,8 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
                 tvResponseTime.setText(resTime);
                 showResult_ReadAnalog(response);
             }
-        } );
+        });
+        */
 
     }
 

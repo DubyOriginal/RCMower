@@ -54,7 +54,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 intent = new Intent(this, SmartDriveActivity.class);
                 break;
             case R.id.btnProgram:
-                intent = new Intent(this, SocketTestActivity.class);
+                intent = new Intent(this, TestLogActivity.class);
                 break;
             case R.id.btnInfo:
                 intent = new Intent(this, InfoActivity.class);

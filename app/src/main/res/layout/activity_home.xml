@@ -86,7 +86,7 @@
                 android:id="@+id/btnProgram"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="PROGRAM"
+                android:text="TEST LOG"
                 android:layout_gravity="center_horizontal"
                 android:drawableLeft="@drawable/ic_program"
                 android:layout_marginBottom="15dp" />
