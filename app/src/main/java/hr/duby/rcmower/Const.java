@@ -18,7 +18,8 @@ public class Const {
 
     //WEB SOCKET URI
     //**********************************************************************************************
-    public static final String WS_URI = "ws://192.168.4.1:81";
+    //public static final String WS_URI = "ws://192.168.4.1:81";
+    public static final String WS_URI = "ws://192.168.244.1:81";
 
     //WEB API - REST
     //**********************************************************************************************
@@ -40,6 +41,7 @@ public class Const {
     //shared prefs key
     public static final String PREF_IP = "PREF_IP";
     public static final String PREF_PORT = "PREF_PORT";
+    public static final String PREF_WS = "PREF_WS";
 
     //GENERAL
     //**********************************************************************************************

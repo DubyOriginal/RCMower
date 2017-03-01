@@ -54,6 +54,9 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 if (ipaddress != null && port != null && ipaddress.length() > 0 && port.length()>0){
                     BasicUtils.setVALUEToSharedPrefs(this, Const.PREF_IP, ipaddress);
                     BasicUtils.setVALUEToSharedPrefs(this, Const.PREF_PORT, port);
+
+                    String ws = "ws://" + ipaddress + ":" + port;
+                    BasicUtils.setVALUEToSharedPrefs(this, Const.PREF_WS, ws);
                 }
                 break;
         }

@@ -6,13 +6,28 @@
     android:orientation="vertical"
     tools:context="hr.duby.rcmower.activities.TestLogActivity">
 
-    <TextView
-        android:id="@+id/id_tv"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:text="fasdfasdf"
-        android:textSize="13dp" />
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/id_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:text="NOT Connected!"
+            android:textSize="13dp" />
+
+        <Button
+            android:id="@+id/btnConnect"
+            android:text="CONNECT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 
     <ListView
         android:id="@+id/id_list"
@@ -38,11 +53,6 @@
             android:layout_weight="1"
             android:text="SEND" />
 
-        <TextView
-            android:id="@+id/tv_log"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="LOG"/>
     </LinearLayout>
 
     <LinearLayout
@@ -51,11 +61,11 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnPumpOn_sta"
+            android:id="@+id/btnClrScr_sta"
             android:layout_width="50pt"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="pump on" />
+            android:text="Clear" />
 
         <Button
             android:id="@+id/btnPumpOff_sta"

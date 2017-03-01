@@ -37,7 +37,6 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         initGUI();
 
         MowerWSClient.getInstance().connectWebSocket(new MowerWSClient.OnWebSocketEvent(){
-
             @Override
             public void onWebSocketEvent(String eventCode, String eventMsg) {
                 DLog("eventCode: " + eventCode + ", eventMsg: " + eventMsg);

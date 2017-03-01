@@ -20,7 +20,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
+import hr.duby.rcmower.Const;
 import hr.duby.rcmower.R;
+import hr.duby.rcmower.util.BasicUtils;
 
 public class TestLogActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -34,9 +36,8 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
     //WIDGETS
     private ListView m_list_view;
     private TextView m_text_view;
-    private TextView m_tv_log;
     private EditText etInputMsg;
-    private Button btnSendMsg, btnPumpOn, btnPumpOff;
+    private Button btnConnect, btnSendMsg, btnClrScr_sta, btnPumpOff;
 
     private WebSocketClient mWebSocketClient;
 
@@ -45,7 +46,7 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
     //**********************************************************************************************
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_socket_test);
+        setContentView(R.layout.activity_test_log);
 
         msgCodeList = new ArrayList<String>();
 
@@ -57,24 +58,22 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         m_text_view = (TextView) findViewById(R.id.id_tv);
         m_text_view.setText("NOT Connected!");
 
-
-        m_tv_log = (TextView) findViewById(R.id.tv_log);
-        m_tv_log.setText("LOG");
-
         etInputMsg = (EditText) findViewById(R.id.etInputMsg_sta);
 
+        btnConnect = (Button) findViewById(R.id.btnConnect);
         btnSendMsg = (Button) findViewById(R.id.btnSendMsg_sta);
-        btnPumpOn = (Button) findViewById(R.id.btnPumpOn_sta);
+        btnClrScr_sta = (Button) findViewById(R.id.btnClrScr_sta);
         btnPumpOff = (Button) findViewById(R.id.btnPumpOff_sta);
 
+        btnConnect.setOnClickListener(this);
         btnSendMsg.setOnClickListener(this);
-        btnPumpOn.setOnClickListener(this);
+        btnClrScr_sta.setOnClickListener(this);
         btnPumpOff.setOnClickListener(this);
 
         //m_client_thread = new Thread(this);
         //m_client_thread.start();
 
-        connectWebSocket();
+        //connectWebSocket();
 
     }
 
@@ -96,11 +95,23 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
+    private void clearList() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                msgCodeList.clear();
+                m_adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     //***********************************************************************************************************************************
     private void connectWebSocket() {
+        String WSUrl = BasicUtils.getVALUEFromSharedPrefs(this, Const.PREF_WS, "ws://192.168.4.1:81");
+        updateMsgList("connecting to: " + WSUrl);
         URI uri;
         try {
-            uri = new URI("ws://192.168.4.1:81");
+            uri = new URI(WSUrl);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -114,19 +125,20 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
                 updateMsgList("Websocket Opened");
                 mWebSocketClient.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL);
 
-                DLog("mWebSocketClient.getDraft: " + mWebSocketClient.getDraft());
-                DLog("mWebSocketClient.getURI: " + mWebSocketClient.getURI());
-                DLog("mWebSocketClient.getConnection: " + mWebSocketClient.getConnection());
+                //DLog("mWebSocketClient.getDraft: " + mWebSocketClient.getDraft());
+                //DLog("mWebSocketClient.getURI: " + mWebSocketClient.getURI());
+                //DLog("mWebSocketClient.getConnection: " + mWebSocketClient.getConnection());
             }
 
             @Override
             public void onMessage(String s) {
+                DLog("onMessage -> " + s);
                 final String message = s;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        m_tv_log.setText(m_tv_log.getText() + "\n" + message);
-                        DLog("onMessage -> " + message);
+                        //m_tv_log.setText(m_tv_log.getText() + "\n" + message);
+                        updateMsgList(">> " + message);
                     }
                 });
             }
@@ -171,8 +183,14 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
 
         int vId = view.getId();
         //******************************************
-        if (vId == R.id.btnPumpOn_sta) {
-            msg_code = "p_on";
+        if (vId == R.id.btnConnect) {
+            eventConnect();
+            return;
+
+        }else if (vId == R.id.btnClrScr_sta){
+            clearList();
+            return;
+
         } else if (vId == R.id.btnPumpOff_sta) {
             msg_code = "p_off";
         } else if (vId == R.id.btnSendMsg_sta) {
@@ -187,6 +205,14 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         etInputMsg.setText(m_adapter.getItem(position));
 
+    }
+
+    // EVENT HANDLING
+    //***********************************************************************************************************************************
+    //***********************************************************************************************************************************
+    private void eventConnect(){
+        updateMsgList("eventConnect");
+        connectWebSocket();
     }
 
 
