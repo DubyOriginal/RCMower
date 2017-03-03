@@ -15,17 +15,27 @@
 #include <Hash.h>
 #include "BasicUtils.h"
 
+// for RF 433MHz transmiter module
+//---------------------------------------------------------------
+#include <RCSwitch.h>
+RCSwitch switchRFT1 = RCSwitch();
+#define RF_T1Data   12  //gpio 12 -> D6
+//---------------------------------------------------------------
+
+// Ultrasonic Sensor
+//---------------------------------------------------------------
+int echoPin = 4;  //gpio 4  -> D2
+int trigPin = 5;  //gpio 5  -> D1
+//---------------------------------------------------------------
+
 //DEFINE PINS
 //****************************************
 #define LED_RED     15
-#define LED_GREEN   12
-#define LED_BLUE    13 
+#define LED_BLUE    13
+
 
 int analogPin = A0;  //gpio 16  -> A0
 
-// Ultrasonic Sensor
-int echoPin = 4;  //gpio 4  -> D2
-int trigPin = 5;  //gpio 5  -> D1
 
 //VAR
 //***********************************************
@@ -50,7 +60,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t sizeT)
     //serial.printf("type: %d\n", type);       //2, 3,...
     //serial.printf("payload: %s\n", payload);   //text
     //serial.printf("sizeT: %u\n", sizeT);     //text length
-    
+
     switch(type) {
         case WStype_DISCONNECTED:
             serial.printf("[%u] Disconnected...!\n", num);
@@ -98,7 +108,7 @@ String handleWSEventForCode(String msgCode){
   if (msgCode=="CMD_LED"){
     serial.println("execute LED event");
     resultStr = "RES_LED";
-    
+
   }else if (msgCode == "CMD_ANALOG"){
     serial.println("execute ANALOG event");
     String analogValue = readAnalog();
@@ -108,6 +118,11 @@ String handleWSEventForCode(String msgCode){
     serial.println("execute CMD_HCSR04 event");
     String sensorValue = readHCSR04();
     resultStr = sensorValue;
+
+  }else if (msgCode == "CMD_RFT1"){
+    serial.println("execute CMD_RFT1 event");
+    String responseValue = sendMsgRFT1();
+    resultStr = responseValue;
 
   }else {
     serial.println("unknown message code");
@@ -123,6 +138,18 @@ String readAnalog() {
   Serial.println("AN = " + analog);
   String analogStr = String(analog);
   return "RES_ANALOG," + analogStr;
+}
+
+//RF T1 broadcast message
+//*******************************************************
+String sendMsgRFT1() {
+  Serial.println("sendMsgRFT1");
+
+  switchRFT1.send(5393, 24);
+  delay(1000);
+  //switchRFT1.send(5396, 24);
+  //delay(1000);
+  return "RES_RFT1,SENT";
 }
 
 //UltraSound sensor
@@ -153,23 +180,37 @@ String readHCSR04() {
 //*********************************************************************************************************
 void preparePINS(){
     pinMode(analogPin, INPUT);   // Sets the analogPin as an Input
+    //pinMode(RF_T1Data, OUTPUT);   //RF 433MHz - data pin
 
     pinMode(trigPin, OUTPUT);  // Sets the trigPin as an Output
     pinMode(echoPin, INPUT);   // Sets the echoPin as an Input
-  
+
     pinMode(LED_RED, OUTPUT);
-    pinMode(LED_GREEN, OUTPUT);
     pinMode(LED_BLUE, OUTPUT);
 
     digitalWrite(LED_RED, 1);
-    digitalWrite(LED_GREEN, 1);
-    digitalWrite(LED_BLUE, 1); 
+    digitalWrite(LED_BLUE, 1);
+}
+
+void initRF433Driver(){
+  // Transmitter is connected to Arduino Pin #12
+  switchRFT1.enableTransmit(RF_T1Data);
+
+  // Optional set protocol (default is 1, will work for most outlets)
+  // mySwitch.setProtocol(2);
+
+  // Optional set pulse length.
+  // mySwitch.setPulseLength(320);
+
+  // Optional set number of transmission repetitions.
+  // mySwitch.setRepeatTransmit(15);
+
 }
 
 void setupWiFi_AP(){
     IPAddress address(192, 168, 4, 1);
     IPAddress subnet(255, 255, 255, 0);
-  
+
     byte channel = 11;
     float wifiOutputPower = 20.5; //Max power
     WiFi.setOutputPower(wifiOutputPower);
@@ -179,7 +220,7 @@ void setupWiFi_AP(){
     WiFi.mode(WIFI_AP);
     //C:\Users\spe\AppData\Roaming\Arduino15\packages\esp8266\hardware\esp8266\2.1.0\cores\esp8266\core_esp8266_phy.c
     //TRYING TO SET [114] = 3 in core_esp8266_phy.c 3 = init all rf
-  
+
     WiFi.persistent(false);
     WiFi.softAPConfig(address, address, subnet);
     WiFi.softAP(ssid, password, channel);
@@ -193,6 +234,7 @@ void setup() {
     delay(1000);
 
     preparePINS();
+    initRF433Driver();
 
     serial.println("");
     serial.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
@@ -205,7 +247,7 @@ void setup() {
     serial.println("Configuring access point...");
     setupWiFi_AP();
     delay(100);
-    
+
     IPAddress myIP = WiFi.softAPIP();
     serial.println("AP IP address: " + String(myIP[0]) + "." + String(myIP[1]) + "." + String(myIP[2]) + "." + String(myIP[3]));
     serial.println("AP IP address: " + myIP.toString());
@@ -217,7 +259,6 @@ void setup() {
     serial.println("WebSocket Server Started");
 
     digitalWrite(LED_RED, 0);
-    digitalWrite(LED_GREEN, 0);
     digitalWrite(LED_BLUE, 0);
 
 }
@@ -226,6 +267,5 @@ void loop() {
     webSocket.loop();
     //server.handleClient();
 }
-
 
 
