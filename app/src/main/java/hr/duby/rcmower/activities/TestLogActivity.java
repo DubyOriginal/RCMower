@@ -10,7 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
@@ -38,6 +40,7 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
     private TextView m_text_view;
     private EditText etInputMsg;
     private Button btnConnect, btnSendMsg, btnClrScr_sta, btnPumpOff;
+    private Spinner spinnerCMDList;
 
     private WebSocketClient mWebSocketClient;
 
@@ -48,6 +51,11 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_log);
 
+        initWidgets();
+
+        spinnerCMDList = (Spinner) findViewById(R.id.spinnerCMDList);
+        spinnerCMDList.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+
         msgCodeList = new ArrayList<String>();
 
         m_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, msgCodeList);
@@ -55,20 +63,7 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         m_list_view.setAdapter(m_adapter);
         m_list_view.setOnItemClickListener(this);
 
-        m_text_view = (TextView) findViewById(R.id.id_tv);
-        m_text_view.setText("NOT Connected!");
 
-        etInputMsg = (EditText) findViewById(R.id.etInputMsg_sta);
-
-        btnConnect = (Button) findViewById(R.id.btnConnect);
-        btnSendMsg = (Button) findViewById(R.id.btnSendMsg_sta);
-        btnClrScr_sta = (Button) findViewById(R.id.btnClrScr_sta);
-        btnPumpOff = (Button) findViewById(R.id.btnPumpOff_sta);
-
-        btnConnect.setOnClickListener(this);
-        btnSendMsg.setOnClickListener(this);
-        btnClrScr_sta.setOnClickListener(this);
-        btnPumpOff.setOnClickListener(this);
 
         //m_client_thread = new Thread(this);
         //m_client_thread.start();
@@ -83,6 +78,25 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         DLog("onStop");
 
         super.onStop();
+    }
+
+    private void initWidgets(){
+        m_text_view = (TextView) findViewById(R.id.id_tv);
+        m_text_view.setText("NOT Connected!");
+
+        etInputMsg = (EditText) findViewById(R.id.etInputMsg_sta);
+
+        spinnerCMDList = (Spinner) findViewById(R.id.spinnerCMDList);
+
+        btnConnect = (Button) findViewById(R.id.btnConnect);
+        btnSendMsg = (Button) findViewById(R.id.btnSendMsg_sta);
+        btnClrScr_sta = (Button) findViewById(R.id.btnClrScr_sta);
+        btnPumpOff = (Button) findViewById(R.id.btnPumpOff_sta);
+
+        btnConnect.setOnClickListener(this);
+        btnSendMsg.setOnClickListener(this);
+        btnClrScr_sta.setOnClickListener(this);
+        btnPumpOff.setOnClickListener(this);
     }
 
     private void updateMsgList(final String msg_code) {
@@ -164,13 +178,13 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         if (mWebSocketClient != null) {
             try {
                 mWebSocketClient.send(msg);
-                etInputMsg.setText("");
+                //etInputMsg.setText("");
 
             }catch (Throwable tErr){
                 DLog("Unable to send message! \n" + tErr);
             }
         } else {
-
+            DLog("mWebSocketClient is NULL");
         }
     }
 
@@ -198,12 +212,27 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         sendMessage(msg_code);
-
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         etInputMsg.setText(m_adapter.getItem(position));
+
+    }
+
+    public class CustomOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
+            //Toast.makeText(parent.getContext(), "OnItemSelectedListener : " + parent.getItemAtPosition(pos).toString(), Toast.LENGTH_SHORT).show();
+
+            String spinnerCMD = parent.getItemAtPosition(pos).toString();
+            etInputMsg.setText(spinnerCMD);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> arg0) {
+            // TODO Auto-generated method stub
+        }
 
     }
 

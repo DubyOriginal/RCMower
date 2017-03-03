@@ -23,4 +23,13 @@
     <string name="dialog_title_error">Pogreška!</string>
     <string name="dialog_title_info">Info!</string>
 
+    <!-- COMMAND LIST -->
+    <!-- *************************************************************************************** -->
+    <string name="promptCmd">Choose a CMD</string>
+    <string-array name="cmdListArray">
+        <item>CMD_LED</item>
+        <item>CMD_ANALOG</item>
+        <item>CMD_HCSR04</item>
+    </string-array>
+
 </resources>

@@ -34,17 +34,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#5566AA99"/>
+        android:background="#5566AA99"
+        android:stackFromBottom="true"
+        android:transcriptMode="normal"/>
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/etInputMsg_sta"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/etInputMsg_sta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:id="@+id/spinnerCMDList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/cmdListArray"
+                android:prompt="@string/promptCmd"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnSendMsg_sta"
