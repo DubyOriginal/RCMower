@@ -30,11 +30,11 @@ int trigPin = 5;  //gpio 5  -> D1
 
 //DEFINE PINS
 //****************************************
-#define LED_RED     15    
-#define LED_BLUE    13 
+#define LED_RED     15
+#define LED_BLUE    13
 #define SATELLITE1_ID 1111
 #define SATELLITE2_ID 2222
-  
+
 
 int analogPin = A0;  //gpio 16  -> A0
 
@@ -62,7 +62,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t sizeT)
     //serial.printf("type: %d\n", type);       //2, 3,...
     //serial.printf("payload: %s\n", payload);   //text
     //serial.printf("sizeT: %u\n", sizeT);     //text length
-    
+
     switch(type) {
         case WStype_DISCONNECTED:
             serial.printf("[%u] Disconnected...!\n", num);
@@ -110,7 +110,7 @@ String handleWSEventForCode(String msgCode){
   if (msgCode=="CMD_LED"){
     serial.println("execute LED event");
     resultStr = "RES_LED";
-    
+
   }else if (msgCode == "CMD_ANALOG"){
     serial.println("execute ANALOG event");
     String analogValue = readAnalog();
@@ -146,7 +146,7 @@ String readAnalog() {
 //*******************************************************
 String sendMsgRFT1() {
   Serial.println("sendMsgRFT1");
-  switchRFT1.send(SATELLITE1_ID, 24);  
+  switchRFT1.send(SATELLITE1_ID, 24);
   return "RES_RFT1,SENT";
 }
 
@@ -182,33 +182,33 @@ void preparePINS(){
 
     pinMode(trigPin, OUTPUT);  // Sets the trigPin as an Output
     pinMode(echoPin, INPUT);   // Sets the echoPin as an Input
-  
+
     pinMode(LED_RED, OUTPUT);
     pinMode(LED_BLUE, OUTPUT);
 
     digitalWrite(LED_RED, 1);
-    digitalWrite(LED_BLUE, 1); 
+    digitalWrite(LED_BLUE, 1);
 }
 
 void initRF433Driver(){
-  // Transmitter is connected to Arduino Pin #12  
+  // Transmitter is connected to Arduino Pin #12
   switchRFT1.enableTransmit(RF_T1Data);
-  
+
   // Optional set protocol (default is 1, will work for most outlets)
-  // mySwitch.setProtocol(2);
+  // switchRFT1.setProtocol(2);
 
   // Optional set pulse length.
-  // mySwitch.setPulseLength(320);
-  
+  // switchRFT1.setPulseLength(320);
+
   // Optional set number of transmission repetitions.
-  // mySwitch.setRepeatTransmit(15);
-   
+  switchRFT1.setRepeatTransmit(1);
+
 }
 
 void setupWiFi_AP(){
     IPAddress address(192, 168, 4, 1);
     IPAddress subnet(255, 255, 255, 0);
-  
+
     byte channel = 11;
     float wifiOutputPower = 20.5; //Max power
     WiFi.setOutputPower(wifiOutputPower);
@@ -218,7 +218,7 @@ void setupWiFi_AP(){
     WiFi.mode(WIFI_AP);
     //C:\Users\spe\AppData\Roaming\Arduino15\packages\esp8266\hardware\esp8266\2.1.0\cores\esp8266\core_esp8266_phy.c
     //TRYING TO SET [114] = 3 in core_esp8266_phy.c 3 = init all rf
-  
+
     WiFi.persistent(false);
     WiFi.softAPConfig(address, address, subnet);
     WiFi.softAP(ssid, password, channel);
@@ -245,7 +245,7 @@ void setup() {
     serial.println("Configuring access point...");
     setupWiFi_AP();
     delay(100);
-    
+
     IPAddress myIP = WiFi.softAPIP();
     serial.println("AP IP address: " + String(myIP[0]) + "." + String(myIP[1]) + "." + String(myIP[2]) + "." + String(myIP[3]));
     serial.println("AP IP address: " + myIP.toString());
@@ -265,6 +265,5 @@ void loop() {
     webSocket.loop();
     //server.handleClient();
 }
-
 
 
