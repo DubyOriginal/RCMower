@@ -1,14 +1,13 @@
 package hr.duby.rcmower;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.util.Log;
 
 import org.json.JSONObject;
 
 import hr.duby.rcmower.data.MPoint;
-import hr.duby.rcmower.network.AsyncHttpClient;
-import hr.duby.rcmower.network.AsyncHttpListener;
+import hr.duby.rcmower.network.http.AsyncHttpClient;
+import hr.duby.rcmower.network.http.AsyncHttpListener;
 import hr.duby.rcmower.util.BasicParsing;
 import hr.duby.rcmower.util.BasicUtils;
 

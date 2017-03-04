@@ -1,7 +1,6 @@
-package hr.duby.rcmower.network;
+package hr.duby.rcmower.network.http;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Created by dvrbancic on 22/08/16.

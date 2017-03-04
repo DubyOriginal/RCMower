@@ -14,12 +14,9 @@ import android.widget.Switch;
 
 import org.json.JSONObject;
 
-import hr.duby.rcmower.Const;
 import hr.duby.rcmower.MowerClient;
 import hr.duby.rcmower.R;
-import hr.duby.rcmower.data.MPoint;
 import hr.duby.rcmower.gui.TouchPadDraw;
-import hr.duby.rcmower.network.HttpRequestMower;
 
 
 public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {

@@ -3,8 +3,11 @@
     package="hr.duby.rcmower">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.NETWORK"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.NETWORK" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
 
     <application
         android:name=".MowerApp"
@@ -65,6 +68,23 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.TestLogActivity"></activity>
+
+
+        <!-- BROADCAST RECEIVERS -->
+        <!-- *********************************************************************************** -->
+        <receiver android:name=".broadcast_receivers.WifiReceiver" android:enabled="true">
+           <intent-filter>
+               <action android:name="android.net.wifi.STATE_CHANGE"/>
+               <!--
+               <action android:name="android.net.wifi.STATE_CHANGE"/>
+                <action android:name="android.net.wifi.SCAN_RESULTS_AVAILABLE_ACTION"/>
+                <action android:name="android.net.wifi.NETWORK_STATE_CHANGED_ACTION"/>
+                <action android:name="android.net.ConnectivityManager.CONNECTIVITY_ACTION" />
+                <action android:name="android.net.wifi.supplicant.CONNECTION_CHANGE" />
+               -->
+           </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

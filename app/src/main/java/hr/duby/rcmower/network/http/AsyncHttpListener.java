@@ -1,4 +1,4 @@
-package hr.duby.rcmower.network;
+package hr.duby.rcmower.network.http;
 
 import org.json.JSONObject;
 

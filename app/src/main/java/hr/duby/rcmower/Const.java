@@ -16,15 +16,14 @@ public class Const {
     //public final static String UNIT_IP   = "192.168.1.26";
     //public final static String UNIT_PORT = "80";
 
-    //WEB SOCKET URI
+    //CONNECTION PARAMS
     //**********************************************************************************************
-    //public static final String WS_URI = "ws://192.168.4.1:81";
-    public static final String WS_URI = "ws://192.168.244.1:81";
+    public static final String WIFI_SSID = "MowerNet";
+    public static final String WIFI_PASS = "mower123";
+    public static final String WS_URI    = "ws://192.168.4.1:81";
 
     //WEB API - REST
     //**********************************************************************************************
-    //public static final String BASE_URL_RADIO = "http://test.mradio.tria.hr/";
-    //public static final String BASE_URL    = "http://" + UNIT_IP + ":" + UNIT_PORT;
     public static final String CMD_DRIVE     = "/cmd/drive/";
 
     public static final String CMD_FORWARD   = "/cmd/forward";

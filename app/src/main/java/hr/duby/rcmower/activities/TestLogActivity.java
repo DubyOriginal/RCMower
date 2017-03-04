@@ -1,5 +1,10 @@
 package hr.duby.rcmower.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,25 +29,41 @@ import java.util.ArrayList;
 
 import hr.duby.rcmower.Const;
 import hr.duby.rcmower.R;
+import hr.duby.rcmower.broadcast_receivers.WifiReceiver;
 import hr.duby.rcmower.util.BasicUtils;
 
-public class TestLogActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    final String SERVER_IP = "192.168.4.1";
-    final int SERVER_PORT = 81;
+public class TestLogActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     //VARS
     private ArrayAdapter<String> m_adapter;
     private ArrayList<String> msgCodeList;
+    private boolean isRegisteredWifiReceiver = false;
 
     //WIDGETS
     private ListView m_list_view;
-    private TextView m_text_view;
+    private TextView tvConnectionStatus;
     private EditText etInputMsg;
-    private Button btnConnect, btnSendMsg, btnClrScr_sta, btnPumpOff;
+    private Button btnWiFiConnect, btnWebSocketConnect, btnSendMsg, btnClrScr_sta, btnPumpOff;
     private Spinner spinnerCMDList;
 
     private WebSocketClient mWebSocketClient;
+
+    private final WifiReceiver wifiReceiver = new WifiReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            super.onReceive(context, intent);
+
+            if (intent.getAction().equals("ACTION_WIFI_CONNECTED")) {
+                String[] netInfo = intent.getStringArrayExtra("NETINFO");
+                updateMsgList("");
+                updateMsgList(netInfo[0]);
+                updateMsgList(netInfo[1]);
+                updateMsgList(netInfo[2]);
+                DLog("ACTION_WIFI_CONNECTED -> netInfo: " + netInfo);
+            }
+        }
+    };
 
 
     @Override
@@ -63,17 +84,36 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         m_list_view.setAdapter(m_adapter);
         m_list_view.setOnItemClickListener(this);
 
+        //WifiReceiver wifiReceiver = new WifiReceiver();
 
+        //WifiReceiver wifiReceiver;
 
-        //m_client_thread = new Thread(this);
-        //m_client_thread.start();
-
-        //connectWebSocket();
+        //registerWiFiBroadcastReceiver();
+        //connectWiFi();
 
     }
 
     @Override
-    //**********************************************************************************************
+    protected void onResume() {
+        super.onResume();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("ACTION_WIFI_CONNECTED");
+        registerReceiver(wifiReceiver, filter);
+        isRegisteredWifiReceiver = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (isRegisteredWifiReceiver){
+            unregisterReceiver(wifiReceiver);
+            isRegisteredWifiReceiver = false;
+        }
+    }
+
+    @Override
     protected void onStop() {
         DLog("onStop");
 
@@ -81,19 +121,21 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initWidgets(){
-        m_text_view = (TextView) findViewById(R.id.id_tv);
-        m_text_view.setText("NOT Connected!");
+        tvConnectionStatus = (TextView) findViewById(R.id.tvConnectionStatus);
+        tvConnectionStatus.setText("NOT Connected!");
 
         etInputMsg = (EditText) findViewById(R.id.etInputMsg_sta);
 
         spinnerCMDList = (Spinner) findViewById(R.id.spinnerCMDList);
 
-        btnConnect = (Button) findViewById(R.id.btnConnect);
+        btnWiFiConnect = (Button) findViewById(R.id.btnWiFiConnect);
+        btnWebSocketConnect = (Button) findViewById(R.id.btnWebSocketConnect);
         btnSendMsg = (Button) findViewById(R.id.btnSendMsg_sta);
         btnClrScr_sta = (Button) findViewById(R.id.btnClrScr_sta);
         btnPumpOff = (Button) findViewById(R.id.btnPumpOff_sta);
 
-        btnConnect.setOnClickListener(this);
+        btnWiFiConnect.setOnClickListener(this);
+        btnWebSocketConnect.setOnClickListener(this);
         btnSendMsg.setOnClickListener(this);
         btnClrScr_sta.setOnClickListener(this);
         btnPumpOff.setOnClickListener(this);
@@ -119,8 +161,35 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
+    private void registerWiFiBroadcastReceiver(){
+        /*
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        registerReceiver(broadcastReceiver, intentFilter);
+        */
+    }
+
+    //***********************************************************************************************************************************
+    private void connectWiFi() {
+        DLog("connectWiFi");
+
+        WifiConfiguration wifiConfig = new WifiConfiguration();
+        wifiConfig.SSID = String.format("\"%s\"", Const.WIFI_SSID);
+        wifiConfig.preSharedKey = String.format("\"%s\"", Const.WIFI_PASS);
+
+        WifiManager wifiManager = (WifiManager)getSystemService(WIFI_SERVICE);
+        //remember id
+        int netId = wifiManager.addNetwork(wifiConfig);
+        wifiManager.disconnect();
+        wifiManager.enableNetwork(netId, true);
+        wifiManager.reconnect();
+
+    }
+
     //***********************************************************************************************************************************
     private void connectWebSocket() {
+        DLog("connectWebSocket");
+
         String WSUrl = BasicUtils.getVALUEFromSharedPrefs(this, Const.PREF_WS, "ws://192.168.4.1:81");
         updateMsgList("connecting to: " + WSUrl);
         URI uri;
@@ -197,7 +266,11 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
 
         int vId = view.getId();
         //******************************************
-        if (vId == R.id.btnConnect) {
+        if (vId == R.id.btnWiFiConnect) {
+            connectWiFi();
+            return;
+
+        }else if (vId == R.id.btnWebSocketConnect){
             eventConnect();
             return;
 

@@ -12,9 +12,8 @@ import org.json.JSONObject;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import hr.duby.rcmower.data.MPoint;
-import hr.duby.rcmower.network.AsyncHttpClient;
-import hr.duby.rcmower.network.AsyncHttpListener;
+import hr.duby.rcmower.network.http.AsyncHttpClient;
+import hr.duby.rcmower.network.http.AsyncHttpListener;
 import hr.duby.rcmower.util.BasicParsing;
 import hr.duby.rcmower.util.BasicUtils;
 

@@ -16,8 +16,7 @@ import hr.duby.rcmower.Const;
 import hr.duby.rcmower.MowerClient;
 import hr.duby.rcmower.R;
 import hr.duby.rcmower.gui.VerticalSeekBar;
-import hr.duby.rcmower.network.HttpRequestMower;
-import hr.duby.rcmower.util.BasicUtils;
+import hr.duby.rcmower.network.http.HttpRequestMower;
 
 public class SmartDriveActivity extends AppCompatActivity  implements View.OnClickListener {
 
