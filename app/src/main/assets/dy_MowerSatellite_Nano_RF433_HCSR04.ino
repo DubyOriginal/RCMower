@@ -1,13 +1,29 @@
+/*
+ * Mower Satellite
+ *   Created on: 03.03.2017
+ *   by DubyOriginal
+ *
+ * ---------------------------------------------------------
+ * -> Arduino Nano
+ * -> RF433MHz (Receiver)
+ * -> HC-SR04 (Ultrasound distance measurement) - PING
+ *
+ * ---------------------------------------------------------
+ * source: USB mini 5V:
+ *  - Nano, HC-SR04,
+ *  - RF433 (RX) DC 5V
+ */
 
 #include <RCSwitch.h>
-
+RCSwitch mySwitch = RCSwitch();
 #define SATELLITE_ID 1111
 
-// Ultrasonic Sensor
+// PINS
 //---------------------------------------------------------------
-int echoPin = 4;
-int trigPin = 5;
-int ledPin  = 6;
+int echoPin = 4;    //Nano  (D4)  -> HCSR-04 (ECHO)
+int trigPin = 5;    //Nano  (D5)  -> HCSR-04 (TRIG)
+int ledPin  = 6;    //Nano  (D6)  -> LED_RX
+//                  //Nano (D2)(INT0 / interupt 0) -> RF433 DATA (defined in mySwitch)
 //---------------------------------------------------------------
 
 //VAR
@@ -17,25 +33,26 @@ int distance;
 unsigned long lastT = 0;
 unsigned long timeDiff = 0;
 
-RCSwitch mySwitch = RCSwitch();
 
 void setup() {
   Serial.begin(115200);
-  pinMode(ledPin, OUTPUT);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  preparePINS();
 
-  digitalWrite(ledPin, 1);
-  delay(1000);
-  digitalWrite(ledPin, 0);
+  initialBlink();
 
-  Serial.println("----------------------------------------------------------");
+  Serial.println("");
+  Serial.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
   Serial.println("Mover Satellite - ID 1111");
   mySwitch.enableReceive(0);  // Receiver on interrupt 0 => that is pin #2
   Serial.println("READY");
 
 }
 
+void preparePINS(){
+  pinMode(ledPin, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
 
 void pingUltraSound(){
   Serial.print("ping -> ");
@@ -47,10 +64,16 @@ void pingUltraSound(){
   digitalWrite(trigPin, LOW);
 
   duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
-  distance = duration * 0.34 / 2;
+  distance = duration * 0.34 / 20;
 
-  Serial.print("D: " + String(distance) + "mm");
+  Serial.print("D: " + String(distance) + "cm");
   Serial.println(" (t: " + String(duration) + "us)");
+}
+
+void initialBlink(){
+  digitalWrite(ledPin, 1);
+  delay(1000);
+  digitalWrite(ledPin, 0);
 }
 
 void printReceivedData(){
@@ -82,11 +105,13 @@ void loop() {
           Serial.print("*");
        }
 
-       mySwitch.resetAvailable();
        //Serial.println("endT: " + String(micros()));
 
     }else {
+      printReceivedData();
       Serial.println("unknown code: " + String(value));
     }
+
+     mySwitch.resetAvailable();
   }
 }

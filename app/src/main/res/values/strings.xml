@@ -31,6 +31,7 @@
         <item>CMD_ANALOG</item>
         <item>CMD_HCSR04</item>
         <item>CMD_RFT1</item>
+        <item>CMD_PINGPONG</item>
     </string-array>
 
 </resources>
