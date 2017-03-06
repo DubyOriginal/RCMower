@@ -262,6 +262,8 @@ String triggerPingPong() {
   //send msg to SATELLITE to start PONG
   switchRFT1.send(SATELLITE1_ID, 24);
 
+  delay(60);
+
   //initiate BASE PING
   String result = readHCSR04();
 
