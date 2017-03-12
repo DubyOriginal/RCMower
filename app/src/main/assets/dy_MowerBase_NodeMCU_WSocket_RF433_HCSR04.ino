@@ -21,54 +21,72 @@
 #include <Arduino.h>
 
 #include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
 #include <WebSocketsServer.h>
-#include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
 #include <Hash.h>
 #include "BasicUtils.h"
 
-// for RF 433MHz transmiter module
-//---------------------------------------------------------------
-#include <RCSwitch.h>
-RCSwitch switchRFT1 = RCSwitch();
+#include <RCSwitch.h>   // for RF 433MHz transmiter module
 
+//---------------------------------------------------------------
 #define SATELLITE1_ID 1111
 #define SATELLITE2_ID 2222
 
-// PINS
+// PINS (defined in BasicUtils)
 //---------------------------------------------------------------
-#define RF_T1Data  12   //gpio 12 -> D6
-#define echoPin    4    //gpio 4  -> D2
-#define trigPin    5    //gpio 5  -> D1
-#define LED_UZV    15   //gpio 15 -> D8
-#define LED_BLUE   13
+int RF_T1Data = D6;
+int LED_UZV   = TX;
 
-int analogPin = A0;     //gpio 16  -> A0
+int echoPin = D2;
+int trigPin = D1;
+int analogPin = A0;
 
+// motorA
+int enA = D0;
+int in1 = D5;
+int in2 = D8;
+// motorB
+int in3 = D3;
+int in4 = D4;
+int enB = D5;
 
-//VAR
-//***********************************************
-long duration;
-int distance;
-unsigned long startT = 0;
-
-//****************************************
-#define serial Serial
-
+// CONST
+//---------------------------------------------------------------
 //WiFi
 const char *ssid = "MowerNet";
 const char *password = "mower123";
+//Drive
+const int FORWARD = 0;
+const int BACK    = 1;
+const int RLEFT   = 2;
+const int RRIGHT  = 3;
+const int STOP    = 4;
 
-//ESP8266WebServer server = ESP8266WebServer(80);
+//VAR
+//---------------------------------------------------------------
+long duration;
+int distance;
+unsigned long t0 = 0;
+unsigned long t1 = 0;
+unsigned long t2 = 0;
+unsigned long t3 = 0;
+unsigned long t4 = 0;
+int dSpeed = 120;        //initial value
+int driveState = STOP;   //initial value
+
+//OTHER
+//---------------------------------------------------------------
+#define serial Serial
+RCSwitch switchRFT1 = RCSwitch();
 WebSocketsServer webSocket = WebSocketsServer(81);
 
-//*********************************************************************************************************
+//**************************************************************************************************************************************
+//**************************************************************************************************************************************
 void setup() {
     serial.begin(115200);
     serial.setDebugOutput(false);
 
     preparePINS();
+    driveStop();
     initialBlink();
     initRF433Driver();
 
@@ -100,22 +118,26 @@ void setup() {
 //*********************************************************************************************************
 void preparePINS(){
     pinMode(analogPin, INPUT);   // Sets the analogPin as an Input
-    //pinMode(RF_T1Data, OUTPUT);   //RF 433MHz - data pin
-
     pinMode(trigPin, OUTPUT);  // Sets the trigPin as an Output
     pinMode(echoPin, INPUT);   // Sets the echoPin as an Input
-
     pinMode(LED_UZV, OUTPUT);
-    pinMode(LED_BLUE, OUTPUT);
 
+    //drive
+    //----------------------------
+    // motorA
+    pinMode(enA, OUTPUT);
+    pinMode(in1, OUTPUT);
+    pinMode(in2, OUTPUT);
+    // motorB
+    pinMode(enB, OUTPUT);
+    pinMode(in3, OUTPUT);
+    pinMode(in4, OUTPUT);
 }
 
 void initialBlink(){
     digitalWrite(LED_UZV, 1);
-    digitalWrite(LED_BLUE, 1);
     delay(1000);
     digitalWrite(LED_UZV, 0);
-    digitalWrite(LED_BLUE, 0);
 }
 
 void initRF433Driver(){
@@ -152,7 +174,8 @@ void setupWiFi_AP(){
     WiFi.softAP(ssid, password, channel);
 }
 
-//*********************************************************************************************************
+//**************************************************************************************************************************************
+//**************************************************************************************************************************************
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t sizeT) {
     serial.println("webSocketEvent");
     serial.println("-------------------S-------------------");
@@ -212,37 +235,76 @@ String handleWSEventForCode(String msgCode){
   }else if (msgCode == "CMD_ANALOG"){
     serial.println("execute ANALOG event");
     String analogValue = readAnalog();
-    resultStr = analogValue;
+    resultStr = "RES_ANALOG," + analogValue;
 
   }else if (msgCode == "CMD_HCSR04"){
     serial.println("execute CMD_HCSR04 event");
     String sensorValue = readHCSR04();
-    resultStr = sensorValue;
+    resultStr = "RES_HCSR04," + sensorValue;
 
   }else if (msgCode == "CMD_RFT1"){
     serial.println("execute CMD_RFT1 event");
     String responseValue = sendMsgRFT1();
-    resultStr = responseValue;
+    resultStr = "RES_RFT1," + responseValue;
 
   }else if (msgCode == "CMD_PINGPONG"){
     serial.println("execute CMD_PINGPONG event");
     String responseValue = triggerPingPong();
-    resultStr = responseValue;
+    resultStr = "RES_PINGPONG," + responseValue;
 
+//DRIVE
+//---------------------------------------------------
+  }else if (msgCode.startsWith("D_MANUAL")){
+    serial.println("execute D_MANUAL event");
+    String responseValue = prepareAndRunManualDrive(msgCode);
+    resultStr = "RES_MANUAL," + responseValue;
+
+  }else if (msgCode == "D_FORWARD"){
+    serial.println("execute D_FORWARD event");
+    String responseValue = triggerPingPong();
+    resultStr = "RES_FORWARD," + responseValue;
+
+  }else if (msgCode == "D_BACK"){
+    serial.println("execute D_BACK event");
+    String responseValue = triggerPingPong();
+    resultStr = "RES_BACK," + responseValue;
+
+  }else if (msgCode == "D_ROTLEFT"){
+    serial.println("execute D_ROTLEFT event");
+    String responseValue = triggerPingPong();
+    resultStr = "RES_ROTLEFT," + responseValue;
+
+  }else if (msgCode == "D_ROTRIGHT"){
+    serial.println("execute D_ROTRIGHT event");
+    String responseValue = triggerPingPong();
+    resultStr = "RES_ROTRIGHT," + responseValue;
+
+  }else if (msgCode == "D_STOP"){
+    serial.println("execute D_STOP event");
+    String responseValue = triggerPingPong();
+    resultStr = "RES_STOP," + responseValue;
+
+  }else if (msgCode == "D_SPEED"){
+    serial.println("execute D_SPEED event");
+    String responseValue = triggerPingPong();
+    resultStr = "RES_SPEED," + responseValue;
   }else {
     serial.println("unknown message code");
   }
   return resultStr;
 }
 
+//**************************************************************************************************************************************
+//**************************************************************************************************************************************
+
 //potenciometer
 //*******************************************************
 String readAnalog() {
   Serial.print("readAnalog -> ");
   int analog = analogRead(analogPin);    // read the input pin
-  Serial.println("AN = " + analog);
   String analogStr = String(analog);
-  return "RES_ANALOG," + analogStr;
+  Serial.println(analogStr);
+  return analogStr;
 }
 
 //RF T1 broadcast message
@@ -250,7 +312,7 @@ String readAnalog() {
 String sendMsgRFT1() {
   Serial.println("sendMsgRFT1");
   switchRFT1.send(SATELLITE1_ID, 24);
-  return "RES_RFT1,SENT";
+  return "SENT";
 }
 
 //TRIGGER PING-PONG
@@ -258,16 +320,29 @@ String sendMsgRFT1() {
 //*******************************************************
 String triggerPingPong() {
   Serial.println("triggerPingPong");
+  int calibDelay = analogRead(analogPin);    // read A0 (0,415ms)
+  calibDelay = 226852 + (calibDelay * 10);
 
+  t0 = micros();
   //send msg to SATELLITE to start PONG
-  switchRFT1.send(SATELLITE1_ID, 24);
+  switchRFT1.send(SATELLITE1_ID, 24);   //225ms
 
-  delay(60);
+  t1 = micros();
+  Serial.println("send2RF: " + String(t1-t0) + "us");
+
+  delayMicroseconds(calibDelay);
+  Serial.println("calibDelay: " + String(calibDelay) + "us");
+
+  t2 = micros();
+  //Serial.println("delayTime: " + String(t2-t1) + "us");
 
   //initiate BASE PING
-  String result = readHCSR04();
+  String result = readHCSR04();  //1,3ms
 
-  return "RES_PINGPONG," + result;
+  t3 = micros();
+  Serial.println("readHCSR04Time: " + String(t3-t2) + "us");
+
+  return result;
 }
 
 //UltraSound sensor
@@ -283,10 +358,9 @@ String readHCSR04() {
   digitalWrite(trigPin, LOW);
 
   duration = pulseIn(echoPin, HIGH); // Reads the echoPin, returns the sound wave travel time in microseconds
-  distance = duration * 0.34 / 2;
+  distance = duration * 0.34 / 20;
 
-  Serial.println("s = " + String(distance) + " mm");
-
+  Serial.print("s = " + String(distance) + " cm");
   Serial.print(" (t = ");
   Serial.print(duration); // Sends the distance value into the Serial Port
   Serial.println(" us)");
@@ -297,10 +371,171 @@ String readHCSR04() {
 
 }
 
+//**************************************************************************************************************************************
+//**************************************************************************************************************************************
+
+//MANUAL DRIVE CONTROL
 //*********************************************************************************************************
+void manualDrive(int mSpeedA, int mSpeedB){
+  //MOTOR A
+  //*********************************************
+  if (mSpeedA < 0){
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    mSpeedA = -1 * mSpeedA;
+
+  }else if (mSpeedA > 0){
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+
+  }else{
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, LOW);
+  }
+  analogWrite(enA, mSpeedA);
+
+  //MOTOR B
+  //*********************************************
+  if (mSpeedB < 0){
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    mSpeedB = -1 * mSpeedB;
+
+  }else if (mSpeedB > 0){
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+
+  }else{
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, LOW);
+  }
+  analogWrite(enB, mSpeedB);
+
+}
+
+//SMART DRIVE CONTROL
+//*********************************************************************************************************
+void driveFroward(){
+  Serial.print("drive: FORWARD (");
+  Serial.print(dSpeed);
+  Serial.println(")");
+  driveState = FORWARD;
+
+  // turn on motor A
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  analogWrite(enA, dSpeed);
+
+  // turn on motor B
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  analogWrite(enB, dSpeed);
+}
+
+//******************************************************************************
+void driveBack(){
+  Serial.print("drive: BACK (");
+  Serial.print(dSpeed);
+  Serial.println(")");
+  driveState = BACK;
+
+  // turn on motor A
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  analogWrite(enA, dSpeed);
+
+  // turn on motor B
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+  analogWrite(enB, dSpeed);
+}
+
+//******************************************************************************
+void rotateLeft(){
+  Serial.print("drive: RLEFT (");
+  Serial.print(dSpeed);
+  Serial.println(")");
+  driveState = RLEFT;
+
+  // turn on motor A
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  analogWrite(enA, dSpeed);
+
+  // turn on motor B
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  analogWrite(enB, dSpeed);
+}
+
+//******************************************************************************
+void rotateRight(){
+  Serial.print("drive: RRIGHT (");
+  Serial.print(dSpeed);
+  Serial.println(")");
+  driveState = RRIGHT;
+
+  // turn on motor A
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  analogWrite(enA, dSpeed);
+
+  // turn on motor B
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+  analogWrite(enB, dSpeed);
+}
+
+//******************************************************************************
+void driveStop(){
+  Serial.println("drive: STOP");
+  driveState = STOP;
+
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+
+  analogWrite(enA, 0);
+  analogWrite(enB, 0);
+}
+
+//******************************************************************************
+void updateSpeed(){
+    if (driveState = FORWARD){
+        driveFroward();
+    } else if (driveState = BACK){
+        driveBack();
+    } else if (driveState = RLEFT){
+        rotateLeft();
+    } else if (driveState = RRIGHT){
+        rotateRight();
+    }
+}
+
+//******************************************************************************
+String prepareAndRunManualDrive(String params){
+    //params: "D_MANUAL,-125,320"
+    int comma1Index = params.indexOf(',');
+    int comma2Index = params.indexOf(',', comma1Index + 1);  //  Search for the next comma just after the first
+
+    String firstValue = params.substring(0, comma1Index);
+    String motAStr = params.substring(comma1Index + 1, comma2Index);
+    String motBStr = params.substring(comma2Index + 1); // To the end of the string
+
+    Serial.println(String("motorA: " +  motAStr + ", motorB: " + motBStr));
+    int motA = motAStr.toInt();
+    int motB = motBStr.toInt();
+    manualDrive(motA, motB);
+    return "OK";
+}
+
+//**************************************************************************************************************************************
+//**************************************************************************************************************************************
 void loop() {
     webSocket.loop();
     //server.handleClient();
 }
+
 
 
