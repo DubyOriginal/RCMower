@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/btnHome_cm"
+                    android:id="@+id/btnHome_mda"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:drawableTop="@drawable/ic_home"
@@ -46,11 +46,45 @@
                     android:text="RUN"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/switchRun"
+                    android:id="@+id/switchRun_mda"
                     android:gravity="center"
                     android:hint="6464"
                     android:visibility="visible" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:text="Test WebSocket"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btnTestWS_mda"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:text="Open WebSocket"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btnOpenWS_mda"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvStatus_mda"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:text="status"
+                    android:textColor="@android:color/holo_red_dark"/>
             </LinearLayout>
 
 

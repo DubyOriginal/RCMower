@@ -1,8 +1,6 @@
 package hr.duby.rcmower.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,59 +11,25 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TextView;
 
-import org.java_websocket.client.WebSocketClient;
+import org.json.JSONObject;
 
-import hr.duby.rcmower.Const;
-import hr.duby.rcmower.MowerWSClient;
+import hr.duby.rcmower.MowerClient;
 import hr.duby.rcmower.R;
-import hr.duby.rcmower.broadcast_receivers.WifiReceiver;
 import hr.duby.rcmower.gui.TouchPadDraw;
 
 
-public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class ManualDriveActivityOLD extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     //WIDGETS
-    private Button btnHome, btnTestWS, btnOpenWS;
-    private TextView tvStatus;
+    private Button btnHome_cm;
     private RelativeLayout rlTouchPad;
     private Switch switchRun;
 
     //VARs
     private String BASE_URL;
     private TouchPadDraw touchPadDraw;
-    private boolean RUNNING = false;
-    private boolean isRegisteredWifiReceiver = false;
-
-    private WebSocketClient mWebSocketClient;
-
-    private final WifiReceiver wifiReceiver = new WifiReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            super.onReceive(context, intent);
-
-            if (intent.getAction().equals("ACTION_WIFI_CONNECTED")) {
-                String[] netInfo = intent.getStringArrayExtra("NETINFO");
-                DLog("ACTION_WIFI_CONNECTED -> netInfo: " + netInfo);
-            }
-        }
-    };
-
-    private MowerWSClient.OnWebSocketEvent webSocketListener = new MowerWSClient.OnWebSocketEvent() {
-        @Override
-        public void onWebSocketEvent(String eventCode, String eventMsg) {
-            final String responseMsg = "eventCode: " + eventCode + ", eventMsg: " + eventMsg;
-            DLog(responseMsg);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    tvStatus.setText(responseMsg);
-                }
-            });
-        }
-    };
-
+    private boolean RUNING = false;
 
     @Override
     //**********************************************************************************************
@@ -74,54 +38,38 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_manual_drive);
 
         // assign buttons
-        btnHome = (Button) findViewById(R.id.btnHome_mda);
-        btnTestWS = (Button) findViewById(R.id.btnTestWS_mda);
-        btnOpenWS = (Button) findViewById(R.id.btnOpenWS_mda);
-        tvStatus = (TextView) findViewById(R.id.tvStatus_mda);
-        switchRun = (Switch) findViewById(R.id.switchRun_mda);
+        btnHome_cm = (Button) findViewById(R.id.btnHome_cm);
+        switchRun = (Switch) findViewById(R.id.switchRun);
         rlTouchPad = (RelativeLayout) findViewById(R.id.llTouchPad);
         touchPadDraw = new TouchPadDraw(this);
         rlTouchPad.addView(touchPadDraw);
 
         // set button listener (this class)
-        btnHome.setOnClickListener(this);
-        btnTestWS.setOnClickListener(this);
-        btnOpenWS.setOnClickListener(this);
+        btnHome_cm.setOnClickListener(this);
         switchRun.setOnCheckedChangeListener(this);
 
-        tvStatus.setText("");
-
     }
 
     @Override
+    //**********************************************************************************************
     protected void onResume() {
         super.onResume();
-
         keepNavBarHidden();
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("ACTION_WIFI_CONNECTED");
-        registerReceiver(wifiReceiver, filter);
-        isRegisteredWifiReceiver = true;
-    }
+        BASE_URL = MowerClient.getInstance().getBASE_URL(this);
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (isRegisteredWifiReceiver){
-            unregisterReceiver(wifiReceiver);
-            isRegisteredWifiReceiver = false;
-        }
     }
 
     //**********************************************************************************************
     private void startRequest_Drive() {
-        if (RUNNING){
+        if (RUNING){
             DLog("-------------------------------------------------------");
-            String prepareCMD = Const.D_MANUAL + "," +  touchPadDraw.getTouchedPointAsCMD();
-            MowerWSClient.getInstance().sendMessage(prepareCMD, webSocketListener);
-            DLog("Msg to SEND: " + prepareCMD);
+            MowerClient.getInstance().request_DRIVE(ManualDriveActivity.this, touchPadDraw.getRelativePoint(), new MowerClient.OnResponse_Drive() {
+                @Override
+                public void onResponse_DriveDone(String resTime, JSONObject result) {
+                    startRequest_Drive();
+                }
+            });
         }
     }
 
@@ -133,12 +81,12 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
     //**********************************************************************************************
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         DLog("onCheckedChanged");
-        if (buttonView.getId() == R.id.switchRun_mda){
+        if (buttonView.getId() == R.id.switchRun){
             if (buttonView != null && isChecked){
-                RUNNING = true;
+                RUNING = true;
                 startRequest_Drive();
             }else{
-                RUNNING = false;
+                RUNING = false;
             }
         }
     }
@@ -150,20 +98,29 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
 
         String CMD = "";
         switch (view.getId()){
-            case R.id.btnHome_mda:
+            case R.id.btnHome_cm:
                 gotoHomeActivity();
                 return;
 
-            case R.id.btnTestWS_mda:
-                MowerWSClient.getInstance().sendMessage(Const.CMD_TEST, webSocketListener);
-                return;
-            case R.id.btnOpenWS_mda:
-                MowerWSClient.getInstance().connectWebSocket(webSocketListener);
-                return;
             default:
                 DLog("unknown button");
                 break;
         }
+
+        /*
+        MowerClient.getInstance().request_GIO0(digital, new MowerClient.OnResponse_GIO0(){
+            @Override
+            public void onResponse_GIO0() {
+
+            }
+        });*/
+
+        //String reqURL = BASE_URL + CMD;
+        //DLog(reqURL);
+
+        // execute HTTP request
+        //new HttpRequestMower(reqURL).execute();
+
     }
 
     private void _____________OTHER_____________() {}

@@ -26,6 +26,15 @@ public class Const {
     //**********************************************************************************************
     public static final String CMD_DRIVE     = "/cmd/drive/";
 
+    public static final String CMD_TEST      = "CMD_TEST";
+    public static final String CMD_ANALOG    = "CMD_ANALOG";
+    public static final String CMD_HCSR04    = "CMD_HCSR04";
+    public static final String CMD_RFT1      = "CMD_RFT1";
+    public static final String CMD_PINGPONG  = "CMD_PINGPONG";
+    public static final String D_MANUAL      = "D_MANUAL";
+
+
+
     public static final String CMD_FORWARD   = "/cmd/forward";
     public static final String CMD_BACK      = "/cmd/back";
     public static final String CMD_RLEFT     = "/cmd/rotateleft";

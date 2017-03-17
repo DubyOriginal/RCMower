@@ -116,7 +116,6 @@ public class TestLogActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onStop() {
         DLog("onStop");
-
         super.onStop();
     }
 

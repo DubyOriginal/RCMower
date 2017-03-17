@@ -59,6 +59,10 @@ public class TouchPadDraw extends View {
         return new MPoint(relativeX, relativeY);
     }
 
+    public String getTouchedPointAsCMD(){
+        return "" + relativeX + "," + relativeY;
+    }
+
 
     //**********************************************************************************************
     private void init(final Context ct) {
