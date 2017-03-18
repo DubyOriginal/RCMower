@@ -17,7 +17,7 @@ public class DVector{
     public DVector createVectorFromPoint(int pX, int pY){
         length = (int)Math.sqrt(Math.pow(pX, 2) + Math.pow(pY, 2));
         Point rotatedPoint = MathUtils.rotateAxesForDegAngle(pX, pY, 180);
-        direction = (int) Math.toDegrees(Math.atan2(rotatedPoint.x, rotatedPoint.y));
+        direction = (int) Math.toDegrees(Math.atan2(rotatedPoint.y, rotatedPoint.x));
         //DVector dvect = new DVector(length, direction);
         //Log.d("DTag", "dvect: " + dvect.toString() + ", len: " + length + ", dir: " + direction);
         return this;
@@ -30,7 +30,7 @@ public class DVector{
         length = (int)Math.sqrt(Math.pow(dX,2) + Math.pow(dY,2));
         //Point rotatedPoint = MathUtils.rotateAxesForDegAngle(dX, dY, 180);
         //direction = (int)Math.toDegrees(Math.atan2(rotatedPoint.x, rotatedPoint.y));
-        direction = (int)Math.toDegrees(Math.atan2(dX, dY));
+        direction = (int)Math.toDegrees(Math.atan2(dY, dX));
         return this;
     }
 

@@ -32,30 +32,24 @@ public class TouchPadDraw extends View {
     private Paint mCursorPaint;
     private Paint textPaint;
     private CursorP mCursor;
-    private int canvasW, canvasH;
-    private float rangeFactor = (1023f / 600f);    //1.7
+    private int canvasW, canvasH;   //initialized onMeasurement()
 
     //CONST
     private final int mCursorRadius = 70;
-
-    //FLAGS
-    boolean flag = false;
 
 
     public TouchPadDraw(final Context ct) {
         super(ct);
         init();
-        //DLog("llTouchPad -> canvasW = " + this.getWidth() + ", canvasH = " + this.getHeight());
     }
 
-    public MPoint getRelativePoint() {
-        return new MPoint(mCursor.refX, mCursor.refY);
+    public DVector getTouchedPointAsVector(){
+        return mCursor.dVector;
     }
 
-    public String getTouchedPointAsCMD(){
-        return "" + mCursor.refX + "," + mCursor.refY;
+    public float getTouchedPadRadius(){
+        return (float)mCursor.maxDistance;
     }
-
 
     //**********************************************************************************************
     private void init() {

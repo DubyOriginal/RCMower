@@ -20,6 +20,7 @@ import hr.duby.rcmower.MowerWSClient;
 import hr.duby.rcmower.R;
 import hr.duby.rcmower.broadcast_receivers.WifiReceiver;
 import hr.duby.rcmower.gui.TouchPadDraw;
+import hr.duby.rcmower.util.DVector;
 
 public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -133,10 +134,32 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
     private void startRequest_Drive() {
         if (RUNNING){
             DLog("-------------------------------------------------------");
-            String prepareCMD = Const.D_MANUAL + "," +  touchPadDraw.getTouchedPointAsCMD();
+            DVector driveVector = touchPadDraw.getTouchedPointAsVector();
+            String driveParams = convertVectorToMotorSpeed(driveVector);
+
+            String prepareCMD = Const.D_MANUAL + "," +  driveParams;
             MowerWSClient.getInstance().sendMessage(prepareCMD, webSocketListener);
             DLog("Msg to SEND: " + prepareCMD);
         }
+    }
+
+    private String convertVectorToMotorSpeed(DVector driveVector) {
+        int mASpeed = 0;
+        int mBSpeed = 0;
+        float touchPadRadius = touchPadDraw.getTouchedPadRadius();
+        float rangeFactor = (1024f / touchPadRadius);    //1024 / 600 = 1.7
+
+        //FORWARD
+        int direction = driveVector.getDirection(); //[0°,90°] [0°,-90°]
+        if (direction < 90 && direction > -90){
+
+
+        //BACKWARD
+        }else {
+
+        }
+
+        return "" + mASpeed + "," + mBSpeed;
     }
 
     public void startTimer(){

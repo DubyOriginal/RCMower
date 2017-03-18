@@ -26,6 +26,11 @@ public class Const {
     //**********************************************************************************************
     public static final int REFRESH_RATE = 700;
 
+    //MOWER PHYSICAL PARAMS  // [mm]
+    //**********************************************************************************************
+    public static final int MOWER_WHEEL_RADIUS = 87;
+    public static final int MOWER_WHEEL_DISTANCE = 450;
+
     //CONTROL COMMANDS
     //**********************************************************************************************
     public static final String CMD_DRIVE   = "/cmd/drive/";
