@@ -33,12 +33,12 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
     private Switch switchRun;
 
     //VARs
-    private String BASE_URL;
     private TouchPadDraw touchPadDraw;
     private boolean RUNNING = false;
     private boolean isRegisteredWifiReceiver = false;
+    private final int REFRESH_RATE = 700;
+    private Handler mHandler = new Handler();
 
-    private WebSocketClient mWebSocketClient;
 
     private final WifiReceiver wifiReceiver = new WifiReceiver() {
         @Override
@@ -65,6 +65,8 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
             });
         }
     };
+
+
 
 
     @Override
@@ -125,6 +127,30 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    private void _____________DRIVING_TIMER_____________() {}
+    //*************************************************************************************************************************************************
+    //*************************************************************************************************************************************************
+
+    //***********************************************
+    private Runnable startTimer = new Runnable() {
+        public void run() {
+            //elapsedTime = System.currentTimeMillis() - startTime;
+            startRequest_Drive();  //will be executed every: REFRESH_RATE ms
+            mHandler.postDelayed(startTimer, REFRESH_RATE);
+        }
+    };
+
+    public void startTimer(){
+        //restart time
+        //startTime = System.currentTimeMillis();
+        mHandler.removeCallbacks(startTimer);
+        mHandler.postDelayed(startTimer, 0);
+    }
+
+    public void stopTimer(){
+        mHandler.removeCallbacks(startTimer);
+    }
+
     private void _____________EVENT_HANDLING_____________() {}
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
@@ -136,8 +162,9 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         if (buttonView.getId() == R.id.switchRun_mda){
             if (buttonView != null && isChecked){
                 RUNNING = true;
-                startRequest_Drive();
+                startTimer();
             }else{
+                stopTimer();
                 RUNNING = false;
             }
         }
