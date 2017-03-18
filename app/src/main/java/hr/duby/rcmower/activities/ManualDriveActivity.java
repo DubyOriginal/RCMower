@@ -15,14 +15,11 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import org.java_websocket.client.WebSocketClient;
-
 import hr.duby.rcmower.Const;
 import hr.duby.rcmower.MowerWSClient;
 import hr.duby.rcmower.R;
 import hr.duby.rcmower.broadcast_receivers.WifiReceiver;
 import hr.duby.rcmower.gui.TouchPadDraw;
-
 
 public class ManualDriveActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -36,7 +33,6 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
     private TouchPadDraw touchPadDraw;
     private boolean RUNNING = false;
     private boolean isRegisteredWifiReceiver = false;
-    private final int REFRESH_RATE = 700;
     private Handler mHandler = new Handler();
 
 
@@ -67,7 +63,9 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
     };
 
 
-
+    private void _____________ACTIVITY_METHODS_____________() {}
+    //*************************************************************************************************************************************************
+    //*************************************************************************************************************************************************
 
     @Override
     //**********************************************************************************************
@@ -117,15 +115,6 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    //**********************************************************************************************
-    private void startRequest_Drive() {
-        if (RUNNING){
-            DLog("-------------------------------------------------------");
-            String prepareCMD = Const.D_MANUAL + "," +  touchPadDraw.getTouchedPointAsCMD();
-            MowerWSClient.getInstance().sendMessage(prepareCMD, webSocketListener);
-            DLog("Msg to SEND: " + prepareCMD);
-        }
-    }
 
     private void _____________DRIVING_TIMER_____________() {}
     //*************************************************************************************************************************************************
@@ -136,9 +125,19 @@ public class ManualDriveActivity extends AppCompatActivity implements View.OnCli
         public void run() {
             //elapsedTime = System.currentTimeMillis() - startTime;
             startRequest_Drive();  //will be executed every: REFRESH_RATE ms
-            mHandler.postDelayed(startTimer, REFRESH_RATE);
+            mHandler.postDelayed(startTimer, Const.REFRESH_RATE);
         }
     };
+
+    //**********************************************************************************************
+    private void startRequest_Drive() {
+        if (RUNNING){
+            DLog("-------------------------------------------------------");
+            String prepareCMD = Const.D_MANUAL + "," +  touchPadDraw.getTouchedPointAsCMD();
+            MowerWSClient.getInstance().sendMessage(prepareCMD, webSocketListener);
+            DLog("Msg to SEND: " + prepareCMD);
+        }
+    }
 
     public void startTimer(){
         //restart time

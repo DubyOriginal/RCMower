@@ -14,9 +14,9 @@ import hr.duby.rcmower.util.BasicUtils;
 /**
  * Created by Duby on 22.10.2016..
  */
-public class MowerClient {
+public class MowerHTTPClient {
 
-    private static MowerClient _this;
+    private static MowerHTTPClient _this;
     private static Object lock = new Object();
 
     public long startTime;
@@ -26,10 +26,10 @@ public class MowerClient {
     private String BASE_URL;
 
     //**********************************************************************************************
-    public static MowerClient getInstance() {
+    public static MowerHTTPClient getInstance() {
         synchronized (lock) {
             if (_this == null) {
-                _this = new MowerClient();
+                _this = new MowerHTTPClient();
             }
         }
         return _this;
@@ -102,7 +102,7 @@ public class MowerClient {
         DLog("Sending request_HCSR04....");
         startTime = System.currentTimeMillis();
 
-        String reqURL = getBASE_URL(context) + Const.SENSOR_HCSR04;
+        String reqURL = getBASE_URL(context) + "SENSOR_HCSR04";
         DLog("reqURL: " + reqURL);
 
         //new HttpRequestMower(reqURL).execute();
@@ -137,7 +137,7 @@ public class MowerClient {
         DLog("Sending request_ReadAnalog....");
         startTime = System.currentTimeMillis();
 
-        String reqURL = getBASE_URL(context) + Const.SENSOR_ANALOG;
+        String reqURL = getBASE_URL(context) + "SENSOR_ANALOG";
         DLog("reqURL: " + reqURL);
 
         new AsyncHttpClient().get(reqURL, new AsyncHttpListener() {
@@ -170,7 +170,7 @@ public class MowerClient {
         DLog("Sending request_ReadSHT11....");
         startTime = System.currentTimeMillis();
 
-        String reqURL = getBASE_URL(context) + Const.SENSOR_SHT11;
+        String reqURL = getBASE_URL(context) + "SENSOR_SHT11";
         DLog("reqURL: " + reqURL);
 
         new AsyncHttpClient().get(reqURL, new AsyncHttpListener() {

@@ -14,7 +14,7 @@ import android.widget.Switch;
 
 import org.json.JSONObject;
 
-import hr.duby.rcmower.MowerClient;
+import hr.duby.rcmower.MowerHTTPClient;
 import hr.duby.rcmower.R;
 import hr.duby.rcmower.gui.TouchPadDraw;
 
@@ -56,7 +56,7 @@ public class ManualDriveActivityOLD extends AppCompatActivity implements View.On
         super.onResume();
         keepNavBarHidden();
 
-        BASE_URL = MowerClient.getInstance().getBASE_URL(this);
+        BASE_URL = MowerHTTPClient.getInstance().getBASE_URL(this);
 
     }
 
@@ -64,7 +64,7 @@ public class ManualDriveActivityOLD extends AppCompatActivity implements View.On
     private void startRequest_Drive() {
         if (RUNING){
             DLog("-------------------------------------------------------");
-            MowerClient.getInstance().request_DRIVE(ManualDriveActivity.this, touchPadDraw.getRelativePoint(), new MowerClient.OnResponse_Drive() {
+            MowerHTTPClient.getInstance().request_DRIVE(ManualDriveActivity.this, touchPadDraw.getRelativePoint(), new MowerHTTPClient.OnResponse_Drive() {
                 @Override
                 public void onResponse_DriveDone(String resTime, JSONObject result) {
                     startRequest_Drive();
@@ -108,7 +108,7 @@ public class ManualDriveActivityOLD extends AppCompatActivity implements View.On
         }
 
         /*
-        MowerClient.getInstance().request_GIO0(digital, new MowerClient.OnResponse_GIO0(){
+        MowerHTTPClient.getInstance().request_GIO0(digital, new MowerHTTPClient.OnResponse_GIO0(){
             @Override
             public void onResponse_GIO0() {
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import hr.duby.rcmower.Const;
-import hr.duby.rcmower.MowerClient;
+import hr.duby.rcmower.MowerHTTPClient;
 import hr.duby.rcmower.MowerWSClient;
 import hr.duby.rcmower.R;
 import hr.duby.rcmower.util.JSONHelper;
@@ -49,7 +49,7 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
     protected void onResume() {
         super.onResume();
 
-        //BASE_URL = MowerClient.getInstance().getBASE_URL(this);
+        //BASE_URL = MowerHTTPClient.getInstance().getBASE_URL(this);
 
 
     }
@@ -103,7 +103,7 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         pbResponse.setMax(Const.HCSR04_MAX);
         tvResponseTime.setText("");
         pbInProgress.setVisibility(View.VISIBLE);
-        MowerClient.getInstance().request_HCSR04(InfoActivity.this, new MowerClient.OnResponse_HCSR04(){
+        MowerHTTPClient.getInstance().request_HCSR04(InfoActivity.this, new MowerHTTPClient.OnResponse_HCSR04(){
             @Override
             public void onResponse_HCSR04Done(String resTime, JSONObject response) {
                 DLog("onResponse_HCSR04Done result: " + response);
@@ -129,7 +129,7 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         });
 
         /*
-        MowerClient.getInstance().request_ReadAnalog(InfoActivity.this, new MowerClient.OnResponse_ReadAnalog(){
+        MowerHTTPClient.getInstance().request_ReadAnalog(InfoActivity.this, new MowerHTTPClient.OnResponse_ReadAnalog(){
             @Override
             public void onResponse_ReadAnalogDone(String resTime, JSONObject response) {
                 DLog("onResponse_ReadAnalogDone result: " + response);
@@ -147,7 +147,7 @@ public class InfoActivity extends AppCompatActivity   implements View.OnClickLis
         pbResponse.setMax(Const.SHT11_MAX);
         tvResponseTime.setText("");
         pbInProgress.setVisibility(View.VISIBLE);
-        MowerClient.getInstance().request_ReadSHT11(InfoActivity.this, new MowerClient.OnResponse_ReadSHT11(){
+        MowerHTTPClient.getInstance().request_ReadSHT11(InfoActivity.this, new MowerHTTPClient.OnResponse_ReadSHT11(){
             @Override
             public void onResponse_ReadSHT11Done(String resTime, JSONObject response) {
                 DLog("onResponse_ReadSHT11Done result: " + response);

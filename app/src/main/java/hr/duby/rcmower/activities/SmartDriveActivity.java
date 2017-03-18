@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 
 import hr.duby.rcmower.Const;
-import hr.duby.rcmower.MowerClient;
+import hr.duby.rcmower.MowerHTTPClient;
 import hr.duby.rcmower.R;
 import hr.duby.rcmower.gui.VerticalSeekBar;
 import hr.duby.rcmower.network.http.HttpRequestMower;
@@ -70,7 +70,7 @@ public class SmartDriveActivity extends AppCompatActivity  implements View.OnCli
         super.onResume();
         keepNavBarHidden();
 
-        BASE_URL = MowerClient.getInstance().getBASE_URL(this);
+        BASE_URL = MowerHTTPClient.getInstance().getBASE_URL(this);
     }
 
 

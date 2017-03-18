@@ -22,9 +22,19 @@ public class Const {
     public static final String WIFI_PASS = "mower123";
     public static final String WS_URI    = "ws://192.168.4.1:81";
 
-    //WEB API - REST
+    //COMMUNICATION PARAMS
     //**********************************************************************************************
-    public static final String CMD_DRIVE     = "/cmd/drive/";
+    public static final int REFRESH_RATE = 700;
+
+    //CONTROL COMMANDS
+    //**********************************************************************************************
+    public static final String CMD_DRIVE   = "/cmd/drive/";
+    public static final String CMD_FORWARD = "CMD_FORWARD";
+    public static final String CMD_BACK    = "CMD_BACK";
+    public static final String CMD_RLEFT   = "CMD_RLEFT";
+    public static final String CMD_RRIGHT  = "CMD_RRIGHT";
+    public static final String CMD_STOP    = "CMD_STOP";
+    public static final String CMD_SPEED   = "CMD_SPEED";
 
     public static final String CMD_TEST      = "CMD_TEST";
     public static final String CMD_ANALOG    = "CMD_ANALOG";
@@ -34,19 +44,8 @@ public class Const {
     public static final String D_MANUAL      = "D_MANUAL";
 
 
-
-    public static final String CMD_FORWARD   = "/cmd/forward";
-    public static final String CMD_BACK      = "/cmd/back";
-    public static final String CMD_RLEFT     = "/cmd/rotateleft";
-    public static final String CMD_RRIGHT    = "/cmd/rotateright";
-    public static final String CMD_STOP      = "/cmd/stop";
-    public static final String CMD_SPEED     = "/cmd/speed/";
-
-    public static final String SENSOR_HCSR04 = "/sensor/hcsr04";  //ultra-sound sensor
-    public static final String SENSOR_ANALOG = "/sensor/analog";
-    public static final String SENSOR_SHT11  = "/sensor/sht11";    //temperature and humidity sensor
-
     //shared prefs key
+    //**********************************************************************************************
     public static final String PREF_IP = "PREF_IP";
     public static final String PREF_PORT = "PREF_PORT";
     public static final String PREF_WS = "PREF_WS";
