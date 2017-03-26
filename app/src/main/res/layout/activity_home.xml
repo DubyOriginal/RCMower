@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.HomeActivity"
-    android:padding="16dp"
+    android:padding="5dp"
     android:gravity="center"
     android:background="#333">
 
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:padding="5dp">
 
         <LinearLayout
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="#444"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:padding="5dp">
 
         <LinearLayout
@@ -109,6 +109,52 @@
                 android:layout_gravity="center_horizontal"
                 android:drawableLeft="@drawable/ic_settings" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:layout_gravity="center_horizontal"
+        android:background="#444"
+        android:layout_margin="10dp"
+        android:padding="5dp">>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:text="WiFi Connect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnWiFiConnect_ha"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="WebSocket Connect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnWSOpen_ha"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="Test WebSocket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnWSTest_ha"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvStatus_ha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="status"
+            android:textColor="@android:color/holo_red_dark"/>
     </LinearLayout>
 
 </LinearLayout>

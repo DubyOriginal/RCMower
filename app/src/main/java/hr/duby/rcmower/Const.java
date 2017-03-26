@@ -36,8 +36,10 @@ public class Const {
     public static final String CMD_DRIVE   = "/cmd/drive/";
     public static final String CMD_FORWARD = "CMD_FORWARD";
     public static final String CMD_BACK    = "CMD_BACK";
-    public static final String CMD_RLEFT   = "CMD_RLEFT";
-    public static final String CMD_RRIGHT  = "CMD_RRIGHT";
+    public static final String CMD_RLEFT   = "CMD_RLEFT";       //Rotate Left
+    public static final String CMD_RRIGHT  = "CMD_RRIGHT";      //Rotate Right
+    public static final String CMD_TLEFT   = "CMD_TLEFT";       //Turn Left
+    public static final String CMD_TRIGHT  = "CMD_TRIGHT";      //Turn Right
     public static final String CMD_STOP    = "CMD_STOP";
     public static final String CMD_SPEED   = "CMD_SPEED";
 
@@ -46,7 +48,10 @@ public class Const {
     public static final String CMD_HCSR04    = "CMD_HCSR04";
     public static final String CMD_RFT1      = "CMD_RFT1";
     public static final String CMD_PINGPONG  = "CMD_PINGPONG";
+
     public static final String D_MANUAL      = "D_MANUAL";
+    public static final String D_SMART       = "D_SMART";
+    public static final String D_PROGRAM     = "D_PROGRAM";
 
 
     //shared prefs key
