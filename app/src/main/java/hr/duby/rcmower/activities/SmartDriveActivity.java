@@ -134,7 +134,10 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
     //**********************************************************************************************
     public void onClick(View view) {
 
+
         String driveParams = "";
+        String turnFactor = "20";   //20%  -> mSpeed: 500 -> motX = 400, motY=600
+        String driveCMD = "";
         switch (view.getId()) {
             case R.id.btnHome_sda:
                 gotoHomeActivity();
@@ -142,30 +145,37 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
 
             case R.id.btnForward_sda:
                 driveParams = prepareFORWARDParams();
+                driveCMD = Const.CMD_FORWARD + "," + driveParams;   // [CMD_FORWARD,mSpeed], example:(CMD_FORWARD,1024)
                 break;
 
             case R.id.btnBack_sda:
                 driveParams = prepareBACKParams();
+                driveCMD = Const.CMD_BACK + "," + driveParams;      // [CMD_BACK,mSpeed],   example:(CMD_BACK,1024)
                 break;
 
             case R.id.btnTurnLeft_sda:
                 driveParams = prepareTurnLEFTParams();
+                driveCMD = Const.CMD_TLEFT + "," + driveParams + "," + turnFactor;     // [CMD_TLEFT,mSpeed,turnFactor], example:(CMD_TLEFT,1024,50)
                 break;
 
             case R.id.btnTurnRight_sda:
                 driveParams = prepareTurnRIGHTParams();
+                driveCMD = Const.CMD_TRIGHT + "," + driveParams + "," + turnFactor;    // [CMD_TRIGHT,mSpeed,turnFactor], example:(CMD_TRIGHT,1024,50)
                 break;
 
             case R.id.btnRotateLeft_sda:
                 driveParams = prepareRotateLEFTParams();
+                driveCMD = Const.CMD_RLEFT + "," + driveParams;     // [CMD_RLEFT,mSpeed], example:(CMD_RLEFT,1024)
                 break;
 
             case R.id.btnRotateRight_sda:
                 driveParams = prepareRotateRIGHTParams();
+                driveCMD = Const.CMD_RRIGHT + "," + driveParams;    // [CMD_RRIGHT,mSpeed], example:(CMD_RRIGHT,1024)
                 break;
 
             case R.id.btnStop_sda:
                 driveParams = prepareSTOPParams();
+                driveCMD = Const.CMD_STOP + "," + driveParams;      // [CMD_STOP,mSpeed], example:(CMD_STOP,1024)
                 break;
 
             default:
@@ -174,8 +184,8 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
         }
 
 
-        if (driveParams != null && driveParams.length() > 0) {
-            startRequest_Drive(driveParams);
+        if (driveCMD != null && driveCMD.length() > 0) {
+            startRequest_Drive(driveCMD);
         }
 
     }
@@ -208,58 +218,70 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
     //*************************************************************************************************************************************************
     //*************************************************************************************************************************************************
 
-    private void startRequest_Drive(String driveParams) {
-
-        String prepareCMD = Const.D_SMART + "," + driveParams;
-        MowerWSClient.getInstance().sendMessage(prepareCMD, webSocketListener);
-        DLog("Msg to SEND: " + prepareCMD);
-
+    private void startRequest_Drive(String driveCMD) {
+        MowerWSClient.getInstance().sendMessage(driveCMD, webSocketListener);
+        DLog("Msg to SEND: " + driveCMD);
     }
 
+
+
+
+
+
+
+
+
+
     //**************************************************************************************
+    // [CMD_FORWARD,mSpeed], example:(CMD_FORWARD,1024)
     private String prepareFORWARDParams() {
         String motLSpeed = String.valueOf(mSpeed);
         String motRSpeed = String.valueOf(mSpeed);
         return motLSpeed + "," + motRSpeed;
     }
 
+    // [CMD_BACK,mSpeed],   example:(CMD_BACK,1024)
     private String prepareBACKParams() {
         String motLSpeed = "-" + String.valueOf(mSpeed);
         String motRSpeed = "-" + String.valueOf(mSpeed);
         return motLSpeed + "," + motRSpeed;
     }
 
+    // [CMD_TLEFT,mSpeed,turnFactor], example:(CMD_TLEFT,1024,50)
     private String prepareTurnLEFTParams() {
-        float turnFactor = 0.2f;
-        int motL = (int)(mSpeed - (mSpeed * turnFactor));
-        int motR = (int)(mSpeed + (mSpeed * turnFactor));
+        int turnFactor = 20;
+        int motL = (int)(mSpeed - (mSpeed * turnFactor / 100));
+        int motR = (int)(mSpeed + (mSpeed * turnFactor / 100));
         String motLSpeed = String.valueOf(motL);
         String motRSpeed = String.valueOf(motR);
         return motLSpeed + "," + motRSpeed;
     }
 
+    // [CMD_TRIGHT,mSpeed,turnFactor], example:(CMD_TRIGHT,1024,50)
     private String prepareTurnRIGHTParams() {
-        float turnFactor = 0.2f;
-        int motL = (int)(mSpeed + (mSpeed * turnFactor));
-        int motR = (int)(mSpeed - (mSpeed * turnFactor));
+        int turnFactor = 20;
+        int motL = (int)(mSpeed + (mSpeed * turnFactor / 100));
+        int motR = (int)(mSpeed - (mSpeed * turnFactor / 100));
         String motLSpeed = String.valueOf(motL);
         String motRSpeed = String.valueOf(motR);
         return motLSpeed + "," + motRSpeed;
     }
 
-
+    // [CMD_RLEFT,mSpeed], example:(CMD_RLEFT,1024)
     private String prepareRotateLEFTParams() {
         String motLSpeed = "-" + String.valueOf(mSpeed);    //normal
         String motRSpeed = String.valueOf(mSpeed);          //reverse
         return motLSpeed + "," + motRSpeed;
     }
 
+    // [CMD_RRIGHT,mSpeed], example:(CMD_RRIGHT,1024)
     private String prepareRotateRIGHTParams() {
         String motLSpeed = String.valueOf(mSpeed);          //normal
         String motRSpeed = "-" + String.valueOf(mSpeed);    //reverse
         return motLSpeed + "," + motRSpeed;
     }
 
+    // [CMD_STOP,mSpeed], example:(CMD_STOP,1024)
     private String prepareSTOPParams() {
         return "";
     }
