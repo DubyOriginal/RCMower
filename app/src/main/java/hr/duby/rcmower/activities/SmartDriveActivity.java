@@ -29,11 +29,11 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
     //WIDGETS
     private Button btnHome_csaa;
     private VerticalSeekBar vsb_speed;
-    private Button btnForward, btnBack, btnLeft, btnRight, btnStop;
+    private Button btnForward, btnBack, btnTurnLeft, btnTurnRight, btnRotateLeft, btnRotateRight, btnStop;
     private TextView tvStatus;
 
     //VARS
-    private int mSpeed = Const.SPEED;  //initial value -> pwm value (0-255)
+    private float mSpeed = Const.SPEED;  //initial value -> pwm value (0-1024)
     private boolean isRegisteredWifiReceiver = false;
 
     private final WifiReceiver wifiReceiver = new WifiReceiver() {
@@ -79,8 +79,10 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
         btnForward = (Button) findViewById(R.id.btnForward_sda);
         btnBack = (Button) findViewById(R.id.btnBack_sda);
         btnStop = (Button) findViewById(R.id.btnStop_sda);
-        btnLeft = (Button) findViewById(R.id.btnLeft_sda);
-        btnRight = (Button) findViewById(R.id.btnRight_sda);
+        btnTurnLeft = (Button) findViewById(R.id.btnTurnLeft_sda);
+        btnTurnRight = (Button) findViewById(R.id.btnTurnRight_sda);
+        btnRotateLeft = (Button) findViewById(R.id.btnRotateLeft_sda);
+        btnRotateRight = (Button) findViewById(R.id.btnRotateRight_sda);
         vsb_speed = (VerticalSeekBar) findViewById(R.id.vsb_speed);
         tvStatus = (TextView) findViewById(R.id.tvStatus_sda);
 
@@ -88,14 +90,16 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
         btnForward.setOnClickListener(this);
         btnBack.setOnClickListener(this);
         btnStop.setOnClickListener(this);
-        btnLeft.setOnClickListener(this);
-        btnRight.setOnClickListener(this);
+        btnTurnLeft.setOnClickListener(this);
+        btnTurnRight.setOnClickListener(this);
+        btnRotateLeft.setOnClickListener(this);
+        btnRotateRight.setOnClickListener(this);
 
         mOnSeekBarChangeListener();
 
         //***************************************
         vsb_speed.setMax(999);  //pwm (0-255)
-        vsb_speed.setProgress(mSpeed);
+        vsb_speed.setProgress((int)mSpeed);
     }
 
 
@@ -144,12 +148,20 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
                 driveParams = prepareBACKParams();
                 break;
 
-            case R.id.btnLeft_sda:
-                driveParams = prepareRLEFTParams();
+            case R.id.btnTurnLeft_sda:
+                driveParams = prepareTurnLEFTParams();
                 break;
 
-            case R.id.btnRight_sda:
-                driveParams = prepareRRIGHTParams();
+            case R.id.btnTurnRight_sda:
+                driveParams = prepareTurnRIGHTParams();
+                break;
+
+            case R.id.btnRotateLeft_sda:
+                driveParams = prepareRotateLEFTParams();
+                break;
+
+            case R.id.btnRotateRight_sda:
+                driveParams = prepareRotateRIGHTParams();
                 break;
 
             case R.id.btnStop_sda:
@@ -206,25 +218,46 @@ public class SmartDriveActivity extends AppCompatActivity implements View.OnClic
 
     //**************************************************************************************
     private String prepareFORWARDParams() {
-        String motASpeed = String.valueOf(mSpeed);
-        String motBSpeed = String.valueOf(mSpeed);
-        return motASpeed + "," + motBSpeed;
+        String motLSpeed = String.valueOf(mSpeed);
+        String motRSpeed = String.valueOf(mSpeed);
+        return motLSpeed + "," + motRSpeed;
     }
 
     private String prepareBACKParams() {
-        String motASpeed = "-" + String.valueOf(mSpeed);
-        String motBSpeed = "-" + String.valueOf(mSpeed);
-        return motASpeed + "," + motBSpeed;
+        String motLSpeed = "-" + String.valueOf(mSpeed);
+        String motRSpeed = "-" + String.valueOf(mSpeed);
+        return motLSpeed + "," + motRSpeed;
     }
 
-    private String prepareRLEFTParams() {
-        String motASpeed = "-" + String.valueOf(mSpeed);
-        String motBSpeed = "-" + String.valueOf(mSpeed);
-        return motASpeed + "," + motBSpeed;
+    private String prepareTurnLEFTParams() {
+        float turnFactor = 0.2f;
+        int motL = (int)(mSpeed - (mSpeed * turnFactor));
+        int motR = (int)(mSpeed + (mSpeed * turnFactor));
+        String motLSpeed = String.valueOf(motL);
+        String motRSpeed = String.valueOf(motR);
+        return motLSpeed + "," + motRSpeed;
     }
 
-    private String prepareRRIGHTParams() {
-        return "";
+    private String prepareTurnRIGHTParams() {
+        float turnFactor = 0.2f;
+        int motL = (int)(mSpeed + (mSpeed * turnFactor));
+        int motR = (int)(mSpeed - (mSpeed * turnFactor));
+        String motLSpeed = String.valueOf(motL);
+        String motRSpeed = String.valueOf(motR);
+        return motLSpeed + "," + motRSpeed;
+    }
+
+
+    private String prepareRotateLEFTParams() {
+        String motLSpeed = "-" + String.valueOf(mSpeed);    //normal
+        String motRSpeed = String.valueOf(mSpeed);          //reverse
+        return motLSpeed + "," + motRSpeed;
+    }
+
+    private String prepareRotateRIGHTParams() {
+        String motLSpeed = String.valueOf(mSpeed);          //normal
+        String motRSpeed = "-" + String.valueOf(mSpeed);    //reverse
+        return motLSpeed + "," + motRSpeed;
     }
 
     private String prepareSTOPParams() {

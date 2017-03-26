@@ -137,6 +137,9 @@ public class MowerWSClient {
             }
         } else {
             DLog("webSocketClient -> NULL");
+            if (listener != null) {
+                listener.onWebSocketEvent("ws_event", "WebSocket NOT Connected!");
+            }
         }
     }
 

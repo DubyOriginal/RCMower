@@ -3,158 +3,159 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.HomeActivity"
-    android:padding="5dp"
+    android:background="#333"
     android:gravity="center"
-    android:background="#333">
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context=".activities.HomeActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="10dp"
+        android:orientation="vertical"
         android:padding="5dp">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="#444">
+            android:background="#444"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/textView3_ha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="DRIVE CONTROL MODE"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="15dp"
                 android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:text="DRIVE CONTROL MODE"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#FFF" />
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
+                android:orientation="horizontal"
                 android:paddingTop="5dp">
 
                 <Button
-                    android:id="@+id/btnCtrlManual"
-                    android:layout_width="match_parent"
+                    android:id="@+id/btnCtrlManual_ha"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="MANUAL DRIVE"
+                    android:layout_weight="1"
                     android:layout_gravity="center_horizontal"
-                    android:drawableLeft="@drawable/ic_all_direction"
-                    android:layout_marginBottom="15dp" />
+                    android:text="MANUAL DRIVE" />
 
                 <Button
-                    android:id="@+id/btnCtrlSemiAutomatic"
-                    android:layout_width="match_parent"
+                    android:id="@+id/btnCtrlSemiAutomatic_ha"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SMART DRIVE"
+                    android:layout_weight="1"
                     android:layout_gravity="center_horizontal"
-                    android:drawableLeft="@drawable/ic_mow_pat"
-                    android:layout_marginBottom="15dp" />
+                    android:text="SMART DRIVE" />
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="#444"
         android:layout_margin="10dp"
+        android:background="#444"
+        android:orientation="vertical"
         android:padding="5dp">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:paddingTop="5dp" >
+            android:orientation="vertical"
+            android:paddingTop="5dp">
 
             <Button
-                android:id="@+id/btnProgram"
+                android:id="@+id/btnProgram_ha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TEST LOG"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
                 android:drawableLeft="@drawable/ic_program"
-                android:layout_marginBottom="15dp" />
+                android:text="TEST LOG" />
 
             <Button
-                android:id="@+id/btnInfo"
+                android:id="@+id/btnInfo_ha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="INFO"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
                 android:drawableLeft="@drawable/ic_mower_info"
                 android:drawablePadding="-40dp"
-                android:layout_marginBottom="15dp" />
+                android:text="INFO" />
 
             <Button
-                android:id="@+id/btnSettings"
+                android:id="@+id/btnSettings_ha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="SETTINGS"
                 android:layout_gravity="center_horizontal"
-                android:drawableLeft="@drawable/ic_settings" />
+                android:drawableLeft="@drawable/ic_settings"
+                android:text="SETTINGS" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
         android:layout_gravity="center_horizontal"
-        android:background="#444"
         android:layout_margin="10dp"
+        android:background="#444"
+        android:orientation="vertical"
         android:padding="5dp">>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="50dp"
+            android:orientation="horizontal">
 
             <Button
-                android:text="WiFi Connect"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/btnWiFiConnect_ha"
-                android:layout_weight="1" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="WiFi Connect"
+                android:textSize="10sp" />
 
             <Button
+                android:id="@+id/btnWSConnect_ha"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="WebSocket Connect"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnWSOpen_ha"
-                android:layout_weight="1" />
+                android:textSize="10sp" />
 
             <Button
-                android:text="Test WebSocket"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/btnWSTest_ha"
-                android:layout_weight="1" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="WebSocket Test"
+                android:textSize="10sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvStatus_ha"
+        <ListView
+            android:id="@+id/lvStatus_ha"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
-            android:text="status"
-            android:textColor="@android:color/holo_red_dark"/>
+            android:textColor="@android:color/white"
+            android:stackFromBottom="true"
+            android:transcriptMode="normal"/>
     </LinearLayout>
 
 </LinearLayout>
