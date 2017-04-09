@@ -27,11 +27,25 @@
     <!-- *************************************************************************************** -->
     <string name="promptCmd">Choose a CMD</string>
     <string-array name="cmdListArray">
+        <item>CMD_TEST</item>
         <item>CMD_LED</item>
         <item>CMD_ANALOG</item>
         <item>CMD_HCSR04</item>
         <item>CMD_RFT1</item>
         <item>CMD_PINGPONG</item>
+        <item>----------------</item>
+        <item>D_MANUAL,0,0</item>
+        <item>D_MANUAL,800,800</item>
+        <item>D_MANUAL,-800,-800</item>
+        <item>D_MANUAL,-800,800</item>
+        <item>D_MANUAL,800,-800</item>
+        <item>----------------</item>
+        <item>D_FORWARD</item>
+        <item>D_BACK</item>
+        <item>D_ROTLEFT</item>
+        <item>D_ROTRIGHT</item>
+        <item>D_STOP</item>
+        <item>D_SPEED</item>
     </string-array>
 
 </resources>
